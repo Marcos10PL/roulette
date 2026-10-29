@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { START_BALANCE } from '../const'
+import { LEADERBOARD_SIZE, START_BALANCE } from '../const'
 import type { Player } from '../types'
 
 export const usePlayerStore = defineStore(
@@ -13,8 +13,14 @@ export const usePlayerStore = defineStore(
       () => players.value.find((p) => p.name === activeName.value) ?? null,
     )
 
+    const balance = computed(() => player.value?.balance ?? 0)
+
     const leaderboard = computed(() =>
       [...players.value].sort((a, b) => b.best - a.best),
+    )
+
+    const topPlayers = computed(() =>
+      leaderboard.value.slice(0, LEADERBOARD_SIZE),
     )
 
     const createPlayer = (name: string) => {
@@ -55,7 +61,9 @@ export const usePlayerStore = defineStore(
       players,
       activeName,
       player,
+      balance,
       leaderboard,
+      topPlayers,
 
       createPlayer,
       updateBalance,

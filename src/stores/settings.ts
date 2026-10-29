@@ -10,11 +10,7 @@ export const useSettingsStore = defineStore(
     const rulesetId = ref<RulesetId>(RULESET_ID.EUROPEAN)
     const ruleset = computed(() => getRuleset(rulesetId.value))
 
-    const selectRuleset = (id: RulesetId) => {
-      rulesetId.value = id
-    }
-
-    return { rulesetId, ruleset, selectRuleset }
+    return { rulesetId, ruleset }
   },
   { persist: { key: 'roulette-settings', pick: ['rulesetId'] } },
 )

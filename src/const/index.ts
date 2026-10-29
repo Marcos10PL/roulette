@@ -12,6 +12,12 @@ export const POCKET_COLOR_HEX = {
   [POCKET_COLOR.GREEN]: '#15803d',
 } as const satisfies Record<PocketColor, string>
 
+export const POCKET_COLOR_LABEL = {
+  [POCKET_COLOR.RED]: 'Czerwone',
+  [POCKET_COLOR.BLACK]: 'Czarne',
+  [POCKET_COLOR.GREEN]: 'Zero',
+} as const satisfies Record<PocketColor, string>
+
 export const BET_KIND = {
   NUMBER: 'number',
   COLUMN: 'column',
@@ -123,6 +129,46 @@ export const RULESET_ID = {
 } as const
 
 export const RULESET_DEFINITIONS = {
-  [RULESET_ID.EUROPEAN]: { name: 'Ruletka europejska', wheel: EUROPEAN_WHEEL },
-  [RULESET_ID.AMERICAN]: { name: 'Ruletka amerykańska', wheel: AMERICAN_WHEEL },
-} as const satisfies Record<RulesetId, { name: string; wheel: number[] }>
+  [RULESET_ID.EUROPEAN]: {
+    name: 'Ruletka europejska',
+    shortName: 'Europejska',
+    wheel: EUROPEAN_WHEEL,
+  },
+  [RULESET_ID.AMERICAN]: {
+    name: 'Ruletka amerykańska',
+    shortName: 'Amerykańska',
+    wheel: AMERICAN_WHEEL,
+  },
+} as const satisfies Record<
+  RulesetId,
+  { name: string; shortName: string; wheel: number[] }
+>
+
+export const LEADERBOARD_SIZE = 5
+
+export const BUTTON_VARIANT = {
+  PRIMARY: 'primary',
+  GHOST: 'ghost',
+  DANGER: 'danger',
+} as const
+
+// rounds kept per player
+export const HISTORY_LIMIT = 200
+
+export const RECENT_RESULTS_COUNT = 5
+export const HISTORY_LIST_SIZE = 5
+export const HOT_NUMBERS_COUNT = 5
+
+export const TONE = {
+  POSITIVE: 'positive',
+  NEGATIVE: 'negative',
+  NEUTRAL: 'neutral',
+} as const
+
+export const LOCALE = 'pl-PL'
+
+export const BALANCE_FLASH = {
+  GAIN: '#4ade80',
+  LOSS: '#f87171',
+  REST: '#facc15',
+} as const

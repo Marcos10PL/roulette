@@ -24,9 +24,9 @@ const buildPockets = (wheel: number[]): Pocket[] =>
   })
 
 const createRuleset = (id: RulesetId): Ruleset => {
-  const { name, wheel } = RULESET_DEFINITIONS[id]
+  const { name, shortName, wheel } = RULESET_DEFINITIONS[id]
   const pockets = buildPockets(wheel)
-  return { id, name, pockets, bets: buildBets(pockets) }
+  return { id, name, shortName, pockets, bets: buildBets(pockets) }
 }
 
 const RULESET_BY_ID: Record<RulesetId, Ruleset> = {

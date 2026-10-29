@@ -3,35 +3,37 @@ import { computed, ref, watch } from 'vue'
 import { CHIPS, ROUND_OUTCOME, START_BALANCE } from '../const'
 import { calculateWinnings } from '../utils/bets'
 import { getRuleset } from '../utils/rulesets'
-import type { ActiveRound, RoundOutcome, RoundResult } from '../types'
+import type { ActiveRound, Pocket, RoundOutcome, RoundResult } from '../types'
+import { useHistoryStore } from './history'
 import { usePlayerStore } from './player'
 import { useSettingsStore } from './settings'
 
 export const useRoundStore = defineStore('round', () => {
   const playerStore = usePlayerStore()
   const settings = useSettingsStore()
+  const history = useHistoryStore()
 
   const bets = ref<Record<string, number>>({})
   const selectedChip = ref<number>(CHIPS[0].value)
   const isSpinning = ref(false)
+  const gameOverOpen = ref(false)
   const activeRound = ref<ActiveRound | null>(null)
 
   const totalBet = computed(() =>
     Object.values(bets.value).reduce((sum, amount) => sum + amount, 0),
   )
-  const balance = computed(() => playerStore.player?.balance ?? 0)
-  const availableBalance = computed(() =>
-    isSpinning.value ? balance.value : balance.value - totalBet.value,
+  const availableBalance = computed(() => playerStore.balance - totalBet.value)
+  const displayedBalance = computed(
+    () => playerStore.balance - (activeRound.value?.totalStaked ?? 0),
   )
   const canConfirm = computed(
     () =>
       !isSpinning.value &&
       totalBet.value > 0 &&
-      totalBet.value <= balance.value,
+      totalBet.value <= playerStore.balance,
   )
   const canClear = computed(() => !isSpinning.value && totalBet.value > 0)
 
-  // bets are tied to a ruleset
   watch(
     () => settings.rulesetId,
     () => {
@@ -39,43 +41,43 @@ export const useRoundStore = defineStore('round', () => {
     },
   )
 
+  watch(availableBalance, (available) => {
+    if (selectedChip.value <= available) return
+
+    const affordable = CHIPS.filter((chip) => chip.value <= available).at(-1)
+    if (affordable) selectedChip.value = affordable.value
+  })
+
   const getBetAmount = (betId: string) => bets.value[betId] ?? 0
 
   const selectChip = (value: number) => (selectedChip.value = value)
 
   const placeBet = (betId: string) => {
     if (isSpinning.value || !playerStore.player) return false
-    if (totalBet.value + selectedChip.value > balance.value) return false
+    if (totalBet.value + selectedChip.value > playerStore.balance) return false
 
     bets.value[betId] = getBetAmount(betId) + selectedChip.value
     return true
   }
 
   const clearBets = () => {
-    if (isSpinning.value) return false
-
-    bets.value = {}
-    return true
+    if (!isSpinning.value) bets.value = {}
   }
 
   const startRound = () => {
-    if (isSpinning.value || !playerStore.player) return null
-    if (!canConfirm.value) return null
+    if (!canConfirm.value || !playerStore.player) return null
 
     isSpinning.value = true
     activeRound.value = {
       rulesetId: settings.rulesetId,
       placedBets: { ...bets.value },
       totalStaked: totalBet.value,
-      balanceAfterStake: balance.value - totalBet.value,
     }
-
-    playerStore.updateBalance(activeRound.value.balanceAfterStake)
 
     return activeRound.value
   }
 
-  const finishRound = (winNumber: number): RoundResult | null => {
+  const finishRound = (pocket: Pocket): RoundResult | null => {
     const round = activeRound.value
     if (!round) {
       isSpinning.value = false
@@ -84,7 +86,7 @@ export const useRoundStore = defineStore('round', () => {
 
     const totalWon = calculateWinnings(
       round.placedBets,
-      winNumber,
+      pocket.id,
       getRuleset(round.rulesetId),
     )
     const net = totalWon - round.totalStaked
@@ -95,35 +97,42 @@ export const useRoundStore = defineStore('round', () => {
           ? ROUND_OUTCOME.LOSE
           : ROUND_OUTCOME.PUSH
 
-    const newBalance = round.balanceAfterStake + totalWon
+    const newBalance = playerStore.balance + net
     const bankrupt = newBalance <= 0
-    const finalBalance = bankrupt ? START_BALANCE : newBalance
 
-    playerStore.updateBalance(finalBalance)
+    playerStore.updateBalance(bankrupt ? START_BALANCE : newBalance)
+    if (bankrupt) gameOverOpen.value = true
+
+    if (playerStore.activeName) {
+      history.add({
+        player: playerStore.activeName,
+        rulesetId: round.rulesetId,
+        pocketId: pocket.id,
+        label: pocket.label,
+        color: pocket.color,
+        staked: round.totalStaked,
+        won: totalWon,
+        net,
+        outcome,
+        at: Date.now(),
+      })
+    }
 
     bets.value = {}
     activeRound.value = null
     isSpinning.value = false
 
-    return {
-      winNumber,
-      totalStaked: round.totalStaked,
-      totalWon,
-      net,
-      outcome,
-      balance: finalBalance,
-      bankrupt,
-    }
+    return { net, outcome }
   }
 
   return {
     bets,
     selectedChip,
     isSpinning,
-    activeRound,
+    gameOverOpen,
     totalBet,
-    balance,
     availableBalance,
+    displayedBalance,
     canConfirm,
     canClear,
 

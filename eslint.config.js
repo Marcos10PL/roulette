@@ -17,6 +17,13 @@ export default tseslint.config(
     files: ['src/**/*.{ts,vue}'],
     languageOptions: { globals: globals.browser },
   },
+  {
+    files: ['src/components/ui/**/*.vue'],
+    rules: {
+      'vue/multi-word-component-names': 'off',
+      'vue/no-reserved-component-names': 'off',
+    },
+  },
   // arrow functions instead of function declarations
   { rules: { 'func-style': ['error', 'expression'] } },
   // must stay last: turns off rules that conflict with Prettier
