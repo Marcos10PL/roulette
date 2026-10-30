@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { onBeforeUnmount, onMounted, useTemplateRef, watch } from 'vue'
 import { useAudioStore } from '../stores/audio'
 import { useSettingsStore } from '../stores/settings'
@@ -6,28 +7,25 @@ import { useWheelStore } from '../stores/wheel'
 import { createRoulette, type Roulette } from '../three/roulette'
 
 const container = useTemplateRef<HTMLDivElement>('container')
-const settings = useSettingsStore()
-const audio = useAudioStore()
-const wheel = useWheelStore()
+const { ruleset } = storeToRefs(useSettingsStore())
+const { play } = useAudioStore()
+const { register } = useWheelStore()
 
 let roulette: Roulette | null = null
 
 onMounted(() => {
   if (!container.value) return
 
-  roulette = createRoulette(container.value, settings.ruleset, {
-    onTick: () => audio.play('TICK'),
+  roulette = createRoulette(container.value, ruleset.value, {
+    onTick: () => play('TICK'),
   })
-  wheel.register(roulette)
+  register(roulette)
 })
 
-watch(
-  () => settings.ruleset,
-  (ruleset) => roulette?.setRuleset(ruleset),
-)
+watch(ruleset, (next) => roulette?.setRuleset(next))
 
 onBeforeUnmount(() => {
-  wheel.register(null)
+  register(null)
   roulette?.dispose()
   roulette = null
 })

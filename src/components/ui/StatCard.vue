@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { TONE } from '../../const'
 import type { Tone } from '../../types'
-import { TONE_TEXT_CLASSES } from './classes'
-import Card from './Card.vue'
+import { TONE_TEXT_CLASSES } from '../../const/classes'
 
 const { tone = TONE.NEUTRAL } = defineProps<{
   label: string
@@ -12,10 +11,13 @@ const { tone = TONE.NEUTRAL } = defineProps<{
 </script>
 
 <template>
-  <Card>
-    <p class="text-xs text-zinc-400">{{ label }}</p>
-    <p class="text-lg font-bold" :class="TONE_TEXT_CLASSES[tone]">
+  <div class="flex flex-col gap-0.5 text-center">
+    <span
+      class="font-mono text-2xl font-bold sm:text-3xl"
+      :class="TONE_TEXT_CLASSES[tone]"
+    >
       {{ value }}
-    </p>
-  </Card>
+    </span>
+    <span class="text-xs text-ink-3 sm:text-sm">{{ label }}</span>
+  </div>
 </template>

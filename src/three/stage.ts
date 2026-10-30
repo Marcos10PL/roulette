@@ -1,10 +1,10 @@
 import * as THREE from 'three'
 
-const PARTICLE_COUNT = 250
+const PARTICLE_COUNT = 50
 const MIN_FULL_WHEEL_ASPECT = 0.93
 
 export const createStage = (container: HTMLElement) => {
-  const renderer = new THREE.WebGLRenderer({ antialias: true })
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   renderer.domElement.style.display = 'block'
   container.appendChild(renderer.domElement)
@@ -13,15 +13,6 @@ export const createStage = (container: HTMLElement) => {
   const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000)
   camera.position.set(0, 10, 40)
   camera.lookAt(0, 0, 0)
-
-  // floor
-  const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(1000, 1000),
-    new THREE.MeshPhongMaterial({ color: '#f53333', side: THREE.DoubleSide }),
-  )
-  floor.rotation.x = Math.PI / 2
-  floor.position.y = -4
-  scene.add(floor)
 
   // point light
   const pointLight = new THREE.PointLight(0xffffff, 1500)
@@ -71,8 +62,6 @@ export const createStage = (container: HTMLElement) => {
     renderer.setAnimationLoop(null)
     resizeObserver.disconnect()
 
-    floor.geometry.dispose()
-    floor.material.dispose()
     particleGeometry.dispose()
     particleMaterial.dispose()
 

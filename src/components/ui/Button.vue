@@ -1,18 +1,21 @@
 <script setup lang="ts">
-import { BUTTON_VARIANT } from '../../const'
-import type { ButtonVariant } from '../../types'
-import { BUTTON_VARIANT_CLASSES } from './classes'
+import type { ButtonSize, ButtonVariant } from '../../types'
+import {
+  BUTTON_SIZE_CLASSES,
+  BUTTON_VARIANT_CLASSES,
+} from '../../const/classes'
 
-const { variant = BUTTON_VARIANT.GHOST } = defineProps<{
+const { variant = 'ghost', size = 'md' } = defineProps<{
   variant?: ButtonVariant
+  size?: ButtonSize
 }>()
 </script>
 
 <template>
   <button
     type="button"
-    class="flex cursor-pointer items-center justify-center gap-2 rounded-xl border px-4 py-2 text-sm text-white backdrop-blur-sm transition-[background-color,border-color,color,filter] enabled:active:brightness-90 motion-reduce:transition-none focus-ring disabled:cursor-not-allowed disabled:opacity-50"
-    :class="BUTTON_VARIANT_CLASSES[variant]"
+    class="flex cursor-pointer items-center justify-center gap-2 rounded-full border backdrop-blur-sm transition-[background-color,border-color,color,filter] enabled:active:brightness-90 motion-reduce:transition-none focus-ring disabled:cursor-not-allowed disabled:opacity-50"
+    :class="[BUTTON_VARIANT_CLASSES[variant], BUTTON_SIZE_CLASSES[size]]"
   >
     <slot />
   </button>

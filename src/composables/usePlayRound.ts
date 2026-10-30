@@ -1,20 +1,14 @@
+import { storeToRefs } from 'pinia'
 import confetti from '@hiseb/confetti'
-import { ROUND_OUTCOME } from '../const'
+import { ROUND_OUTCOME, ROUND_OUTCOME_LABEL } from '../const'
 import { useAudioStore } from '../stores/audio'
 import { useRoundStore } from '../stores/round'
 import { useToastStore } from '../stores/toast'
 import { useWheelStore } from '../stores/wheel'
 import type { RoundOutcome, SoundName } from '../types'
-import { formatMoneyAmount } from '../utils/format'
+import { formatSigned } from '../utils/format'
 import { toneOf } from '../utils/tone'
 import { drawWinningIndex, getRuleset } from '../utils/rulesets'
-
-const MESSAGES: Record<RoundOutcome, (net: number) => string> = {
-  [ROUND_OUTCOME.WIN]: (net) => `Wygrałeś ${formatMoneyAmount(net)}!`,
-  [ROUND_OUTCOME.LOSE]: (net) =>
-    `Niestety, przegrałeś ${formatMoneyAmount(Math.abs(net))}.`,
-  [ROUND_OUTCOME.PUSH]: () => 'Remis! Nic nie straciłeś, nic nie wygrałeś.',
-}
 
 const SOUNDS_BY_OUTCOME: Record<RoundOutcome, SoundName> = {
   [ROUND_OUTCOME.WIN]: 'WIN',
@@ -23,32 +17,37 @@ const SOUNDS_BY_OUTCOME: Record<RoundOutcome, SoundName> = {
 }
 
 export const usePlayRound = () => {
-  const roundStore = useRoundStore()
-  const audio = useAudioStore()
-  const toast = useToastStore()
-  const wheel = useWheelStore()
+  const { startRound, finishRound } = useRoundStore()
+  const { play: playSound } = useAudioStore()
+  const { show } = useToastStore()
+  const wheelStore = useWheelStore()
+  const { isReady } = storeToRefs(wheelStore)
+  const { spin } = wheelStore
 
   const play = async () => {
-    if (!wheel.isReady) return
+    if (!isReady.value) return
 
-    const round = roundStore.startRound()
+    const round = startRound()
     if (!round) return
 
-    audio.play('BELL_RING')
+    playSound('BELL_RING')
 
     const ruleset = getRuleset(round.rulesetId)
     const index = drawWinningIndex(ruleset)
-    await wheel.spin(index)
+    await spin(index)
 
     const pocket = ruleset.pockets[index]
-    const result = roundStore.finishRound(pocket)
+    const result = finishRound(pocket)
     if (!result) return
 
-    toast.show(
-      `Wypadło ${pocket.label}. ${MESSAGES[result.outcome](result.net)}`,
-      toneOf(result.net),
-    )
-    audio.play(SOUNDS_BY_OUTCOME[result.outcome])
+    const label = ROUND_OUTCOME_LABEL[result.outcome]
+    show({
+      tone: toneOf(result.net),
+      title: result.outcome === ROUND_OUTCOME.WIN ? `${label}!` : label,
+      amount: formatSigned(result.net),
+      pocket: { label: pocket.label, color: pocket.color },
+    })
+    playSound(SOUNDS_BY_OUTCOME[result.outcome])
 
     if (result.outcome === ROUND_OUTCOME.WIN) {
       confetti({

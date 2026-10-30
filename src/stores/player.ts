@@ -57,6 +57,8 @@ export const usePlayerStore = defineStore(
       activeName.value = null
     }
 
+    const isYou = (name: string) => name === activeName.value
+
     return {
       players,
       activeName,
@@ -69,6 +71,7 @@ export const usePlayerStore = defineStore(
       updateBalance,
       resetPlayer,
       switchPlayer,
+      isYou,
     }
   },
   { persist: { key: 'roulette-profiles', pick: ['players', 'activeName'] } },

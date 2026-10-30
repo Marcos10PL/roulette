@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { BUTTON_VARIANT } from '../../const'
 import Button from './Button.vue'
 import Modal from './Modal.vue'
 
@@ -25,10 +24,7 @@ const confirm = () => {
 
     <template #footer>
       <Button @click="open = false">Anuluj</Button>
-      <Button
-        :variant="danger ? BUTTON_VARIANT.DANGER : BUTTON_VARIANT.PRIMARY"
-        @click="confirm"
-      >
+      <Button :variant="danger ? 'danger' : 'primary'" @click="confirm">
         {{ confirmLabel }}
       </Button>
     </template>

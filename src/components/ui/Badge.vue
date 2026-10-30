@@ -1,10 +1,14 @@
 <script setup lang="ts">
-defineProps<{ color: string }>()
+import type { BadgeSize } from '../../types'
+import { BADGE_SIZE_CLASSES } from '../../const/classes'
+
+const { size = 'md' } = defineProps<{ color: string; size?: BadgeSize }>()
 </script>
 
 <template>
   <span
-    class="grid size-6 shrink-0 place-items-center rounded-full border border-white/40 text-[10px] font-bold text-white sm:size-7 sm:text-xs"
+    class="grid shrink-0 place-items-center rounded-full border border-white/40 font-bold text-white"
+    :class="BADGE_SIZE_CLASSES[size]"
     :style="{ background: color }"
   >
     <slot />

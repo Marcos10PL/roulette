@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { CHIPS, ROUND_OUTCOME, START_BALANCE } from '../const'
-import { calculateWinnings } from '../utils/bets'
+import { bestPayout, calculateWinnings } from '../utils/bets'
 import { getRuleset } from '../utils/rulesets'
 import type { ActiveRound, Pocket, RoundOutcome, RoundResult } from '../types'
 import { useHistoryStore } from './history'
@@ -25,6 +25,11 @@ export const useRoundStore = defineStore('round', () => {
   const availableBalance = computed(() => playerStore.balance - totalBet.value)
   const displayedBalance = computed(
     () => playerStore.balance - (activeRound.value?.totalStaked ?? 0),
+  )
+  const maxWin = computed(() =>
+    totalBet.value
+      ? bestPayout(bets.value, settings.ruleset) - totalBet.value
+      : 0,
   )
   const canConfirm = computed(
     () =>
@@ -133,6 +138,7 @@ export const useRoundStore = defineStore('round', () => {
     totalBet,
     availableBalance,
     displayedBalance,
+    maxWin,
     canConfirm,
     canClear,
 

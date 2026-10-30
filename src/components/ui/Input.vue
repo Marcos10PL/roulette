@@ -17,6 +17,6 @@ onMounted(() => {
     ref="field"
     v-model="model"
     type="text"
-    class="min-w-0 rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-2 outline-none focus:border-white"
+    class="h-10 min-w-0 rounded-full border border-violet-hi/35 bg-violet/10 px-5 text-base text-ink shadow-field outline-none placeholder:text-ink-3 focus:border-violet-glow focus:shadow-field-focus"
   />
 </template>

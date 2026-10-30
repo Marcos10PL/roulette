@@ -10,7 +10,7 @@ defineProps<{
 
 <template>
   <div
-    class="flex h-3 overflow-hidden rounded-full border border-zinc-600 bg-zinc-800"
+    class="flex h-2 overflow-hidden rounded-full bg-panel-raised sm:h-2.5"
     role="img"
     :aria-label="label"
   >

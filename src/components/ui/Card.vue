@@ -8,8 +8,10 @@ const { tag = 'div', active = false } = defineProps<{
 <template>
   <component
     :is="tag"
-    class="rounded-lg border px-3 py-2"
-    :class="active ? 'border-yellow-500' : 'border-zinc-700'"
+    class="rounded-lg px-3.5 py-3 sm:px-4"
+    :class="
+      active ? 'bg-violet/20 ring-1 ring-violet ring-inset' : 'bg-white/3'
+    "
   >
     <slot />
   </component>

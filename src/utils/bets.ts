@@ -16,7 +16,6 @@ const columnBets: BetDefinition[] = [1, 2, 3].map((column) => ({
   kind: BET_KIND.COLUMN,
   odds: ODDS.DOZEN_COLUMN,
   value: column,
-  color: POCKET_COLOR.BLACK,
   wins: (winNumber) => isRegular(winNumber) && winNumber % 3 === column % 3,
 }))
 
@@ -26,7 +25,6 @@ const dozenBets: BetDefinition[] = [1, 2, 3].map((dozen) => ({
   kind: BET_KIND.DOZEN,
   odds: ODDS.DOZEN_COLUMN,
   value: dozen,
-  color: POCKET_COLOR.BLACK,
   wins: (winNumber) =>
     winNumber >= (dozen - 1) * 12 + 1 && winNumber <= dozen * 12,
 }))
@@ -52,7 +50,6 @@ export const buildBets = (pockets: Pocket[]): BetDefinition[] => {
       id: BET_IDS.LOW,
       label: '1 - 18',
       kind: BET_KIND.OUTSIDE,
-      color: POCKET_COLOR.BLACK,
       odds: ODDS.EVEN_MONEY,
       wins: (winNumber) => winNumber >= 1 && winNumber <= 18,
     },
@@ -60,7 +57,6 @@ export const buildBets = (pockets: Pocket[]): BetDefinition[] => {
       id: BET_IDS.EVEN,
       label: 'Parzyste',
       kind: BET_KIND.OUTSIDE,
-      color: POCKET_COLOR.BLACK,
       odds: ODDS.EVEN_MONEY,
       wins: (winNumber) => isRegular(winNumber) && winNumber % 2 === 0,
     },
@@ -84,7 +80,6 @@ export const buildBets = (pockets: Pocket[]): BetDefinition[] => {
       id: BET_IDS.ODD,
       label: 'Nieparzyste',
       kind: BET_KIND.OUTSIDE,
-      color: POCKET_COLOR.BLACK,
       odds: ODDS.EVEN_MONEY,
       wins: (winNumber) => isRegular(winNumber) && winNumber % 2 === 1,
     },
@@ -92,7 +87,6 @@ export const buildBets = (pockets: Pocket[]): BetDefinition[] => {
       id: BET_IDS.HIGH,
       label: '19 - 36',
       kind: BET_KIND.OUTSIDE,
-      color: POCKET_COLOR.BLACK,
       odds: ODDS.EVEN_MONEY,
       wins: (winNumber) => winNumber >= 19 && winNumber <= 36,
     },
@@ -118,3 +112,14 @@ export const calculateWinnings = (
 
   return totalWon
 }
+
+export const bestPayout = (
+  placedBets: Record<string, number>,
+  ruleset: Ruleset,
+) =>
+  Math.max(
+    0,
+    ...ruleset.pockets.map((pocket) =>
+      calculateWinnings(placedBets, pocket.id, ruleset),
+    ),
+  )

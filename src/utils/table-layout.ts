@@ -15,12 +15,9 @@ const DOZEN_GRID_ROW = NUMBER_GRID_ROWS + 1
 const OUTSIDE_GRID_ROW = NUMBER_GRID_ROWS + 2
 const TABLE_ROWS = OUTSIDE_GRID_ROW
 
-const NUMBER_ROW_HEIGHT = '0.9rem'
-const OUTSIDE_ROW_HEIGHT = '1.8rem'
-
 export const TABLE_GRID_STYLE = {
   gridTemplateColumns: `repeat(${TABLE_COLUMNS}, minmax(0, 1fr))`,
-  gridTemplateRows: `repeat(${NUMBER_GRID_ROWS}, ${NUMBER_ROW_HEIGHT}) repeat(${TABLE_ROWS - NUMBER_GRID_ROWS}, ${OUTSIDE_ROW_HEIGHT})`,
+  gridTemplateRows: `repeat(${NUMBER_GRID_ROWS}, var(--row-number)) repeat(${TABLE_ROWS - NUMBER_GRID_ROWS}, var(--row-outside))`,
 }
 
 const OUTSIDE_ORDER: string[] = [
@@ -82,7 +79,7 @@ export const getTableCells = (ruleset: Ruleset): TableCell[] => {
     bet,
     style: {
       ...PLACEMENT[bet.kind](bet, hasDoubleZero),
-      background: POCKET_COLOR_HEX[bet.color],
+      ...(bet.color ? { background: POCKET_COLOR_HEX[bet.color] } : {}),
     },
     ariaLabel: `${bet.label}, wypłata ${bet.odds}:1`,
   }))

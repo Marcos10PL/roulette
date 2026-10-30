@@ -1,13 +1,103 @@
 @import 'tailwindcss';
 
+@font-face {
+  font-family: 'Big Shoulders Display';
+  src: url('/fonts/BigShouldersDisplay-ExtraBold.woff2') format('woff2');
+  font-weight: 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/GeistMono-Bold.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@theme {
+  --font-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, Menlo, Consolas, monospace;
+  --font-sans: var(--font-mono);
+
+  --color-ground: #06040d;
+  --color-panel: #120b28;
+  --color-panel-top: #1d1340;
+  --color-panel-raised: #1b1238;
+  --color-scrim: #04020a;
+  --color-chip-core: #0d0920;
+  --color-line: #2f2357;
+  --color-line-strong: #6a4fd0;
+  --color-violet: #7c3aed;
+  --color-violet-hi: #a78bfa;
+  --color-violet-hover: #8b4cf7;
+  --color-violet-neon: #8b5cf6;
+  --color-violet-glow: #c4b5fd;
+  --color-cyan: #67e8f9;
+  --color-gold: #fcd34d;
+  --color-gold-ink: #1a1200;
+  --color-win: #34f5a4;
+  --color-loss: #ff7a95;
+  --color-ink: #f4f0ff;
+  --color-ink-2: #cbbff0;
+  --color-ink-3: #9e90cc;
+
+  --shadow-glow-primary:
+    inset 0 1px 0 rgb(255 255 255 / 0.25), 0 0 18px rgb(124 58 237 / 0.45);
+  --shadow-glow-win: 0 0 22px rgb(52 245 164 / 0.25);
+  --shadow-glow-loss: 0 0 22px rgb(255 122 149 / 0.2);
+  --shadow-glow-info: 0 0 22px rgb(124 58 237 / 0.25);
+  --shadow-field: inset 0 0 20px rgb(124 58 237 / 0.15);
+  --shadow-field-focus:
+    inset 0 0 20px rgb(124 58 237 / 0.25), 0 0 0 4px rgb(124 58 237 / 0.25);
+  --drop-shadow-neon: 0 0 6px var(--color-violet-neon);
+  --shadow-modal:
+    inset 0 1px 0 rgb(255 255 255 / 0.06), 0 20px 50px rgb(0 0 0 / 0.35);
+}
+
+@custom-variant panels (@media (min-width: calc(86vh + 600px)));
+
+@layer base {
+  html,
+  body {
+    background-color: var(--color-ground);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+}
+
 @utility focus-ring {
   &:focus-visible {
-    outline: 2px solid white;
+    outline: 2px solid var(--color-cyan);
     outline-offset: 2px;
   }
 }
 
-html,
-body {
-  background-color: black;
+@utility neon-text {
+  color: #f6f0ff;
+  text-shadow:
+    0 0 2px #fff,
+    0 0 10px var(--color-violet-glow),
+    0 0 24px var(--color-violet-neon);
+}
+
+@utility sky {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: -15%;
+    right: -15%;
+    bottom: -40%;
+    height: 85%;
+    background: radial-gradient(
+      closest-side,
+      rgba(124, 58, 237, 0.55),
+      rgba(76, 29, 149, 0.35) 50%,
+      transparent
+    );
+  }
 }

@@ -1,6 +1,5 @@
 import type {
   BET_KIND,
-  BUTTON_VARIANT,
   POCKET_COLOR,
   ROUND_OUTCOME,
   RULESET_ID,
@@ -13,7 +12,10 @@ export type RoundOutcome = (typeof ROUND_OUTCOME)[keyof typeof ROUND_OUTCOME]
 export type BetKind = (typeof BET_KIND)[keyof typeof BET_KIND]
 export type PocketColor = (typeof POCKET_COLOR)[keyof typeof POCKET_COLOR]
 export type RulesetId = (typeof RULESET_ID)[keyof typeof RULESET_ID]
-export type ButtonVariant = (typeof BUTTON_VARIANT)[keyof typeof BUTTON_VARIANT]
+export type ModalSize = 'sm' | 'md' | 'lg'
+export type BadgeSize = 'md' | 'lg'
+export type ButtonVariant = 'primary' | 'ghost' | 'quiet' | 'danger'
+export type ButtonSize = 'icon-sm' | 'icon' | 'md' | 'lg' | 'xl'
 
 export type Tone = (typeof TONE)[keyof typeof TONE]
 
@@ -57,7 +59,7 @@ export type BetDefinition = {
   kind: BetKind
   odds: number
   value?: number
-  color: PocketColor
+  color?: PocketColor
   wins: (winNumber: number) => boolean
 }
 

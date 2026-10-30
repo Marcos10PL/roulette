@@ -2,8 +2,8 @@ import gsap from 'gsap'
 import { startPulse } from './effects'
 import { isReducedMotion, seconds } from './motion'
 
-const GLOW_REST = 'drop-shadow(0 0 8px rgba(245, 51, 51, 0.45))'
-const GLOW_PEAK = 'drop-shadow(0 0 26px rgba(245, 51, 51, 1))'
+const GLOW_REST = 'drop-shadow(0 0 8px rgba(124, 58, 237, 0.45))'
+const GLOW_PEAK = 'drop-shadow(0 0 26px rgba(139, 92, 246, 1))'
 
 type Parts = {
   letters: HTMLElement[]

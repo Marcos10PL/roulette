@@ -7,9 +7,15 @@ export const POCKET_COLOR = {
 } as const
 
 export const POCKET_COLOR_HEX = {
-  [POCKET_COLOR.RED]: '#b91c1c',
-  [POCKET_COLOR.BLACK]: '#1c1917',
-  [POCKET_COLOR.GREEN]: '#15803d',
+  [POCKET_COLOR.RED]: '#c0263a',
+  [POCKET_COLOR.BLACK]: '#2a2440',
+  [POCKET_COLOR.GREEN]: '#138a4a',
+} as const satisfies Record<PocketColor, string>
+
+export const POCKET_COLOR_BAR_HEX = {
+  [POCKET_COLOR.RED]: '#c0263a',
+  [POCKET_COLOR.BLACK]: '#4a3f70',
+  [POCKET_COLOR.GREEN]: '#138a4a',
 } as const satisfies Record<PocketColor, string>
 
 export const POCKET_COLOR_LABEL = {
@@ -31,15 +37,21 @@ export const ROUND_OUTCOME = {
   PUSH: 'push',
 } as const
 
+export const ROUND_OUTCOME_LABEL = {
+  [ROUND_OUTCOME.WIN]: 'Wygrana',
+  [ROUND_OUTCOME.LOSE]: 'Przegrana',
+  [ROUND_OUTCOME.PUSH]: 'Remis',
+} as const
+
 export const START_BALANCE = 1000
 
 export const CHIPS = [
-  { value: 1, color: '#d4d4d8', textDark: true },
-  { value: 5, color: '#ef4444', textDark: false },
-  { value: 10, color: '#3b82f6', textDark: false },
-  { value: 50, color: '#22c55e', textDark: false },
-  { value: 100, color: '#27272a', textDark: false },
-  { value: 500, color: '#a855f7', textDark: false },
+  { value: 1, color: '#a1a1aa' },
+  { value: 5, color: '#ef4444' },
+  { value: 10, color: '#3b82f6' },
+  { value: 50, color: '#22c55e' },
+  { value: 100, color: '#64748b' },
+  { value: 500, color: '#a855f7' },
 ] as const
 
 export const SOUNDS = {
@@ -146,12 +158,6 @@ export const RULESET_DEFINITIONS = {
 
 export const LEADERBOARD_SIZE = 5
 
-export const BUTTON_VARIANT = {
-  PRIMARY: 'primary',
-  GHOST: 'ghost',
-  DANGER: 'danger',
-} as const
-
 // rounds kept per player
 export const HISTORY_LIMIT = 200
 
@@ -168,7 +174,7 @@ export const TONE = {
 export const LOCALE = 'pl-PL'
 
 export const BALANCE_FLASH = {
-  GAIN: '#4ade80',
-  LOSS: '#f87171',
-  REST: '#facc15',
+  GAIN: '#34f5a4',
+  LOSS: '#ff7a95',
+  REST: '#fcd34d',
 } as const
