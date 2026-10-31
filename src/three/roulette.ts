@@ -1,4 +1,4 @@
-import { themeValue } from '../const/classes'
+import { themeValue } from '../utils/theme'
 import gsap from 'gsap'
 import * as THREE from 'three'
 import {
@@ -30,10 +30,11 @@ type RouletteOptions = {
 export const createRoulette = (
   container: HTMLElement,
   ruleset: Ruleset,
+  goldIds: number[],
   { onTick }: RouletteOptions = {},
 ) => {
   const stage = createStage(container)
-  const wheel = createWheel(ruleset.pockets)
+  const wheel = createWheel(ruleset.pockets, goldIds)
   stage.scene.add(wheel.group)
 
   const pointerColor = themeValue('--color-pointer')
@@ -109,7 +110,7 @@ export const createRoulette = (
       spinTimeline = gsap.timeline()
 
       spinTimeline.to(stage.camera.position, {
-        z: stage.getDistance().SPIN,
+        z: stage.getProfile().SPIN,
         duration: seconds(1.5),
         ease: 'power2',
         onStart: () => {
@@ -157,7 +158,7 @@ export const createRoulette = (
 
           endTimeline = gsap.timeline({
             onComplete: () => {
-              wheel.redraw()
+              wheel.clearOverlay()
               spinSpeed = IDLE_SPEED
             },
           })
@@ -189,7 +190,7 @@ export const createRoulette = (
           endTimeline.to(pointerLight, { intensity: 0, duration: 0.4 }, '<')
 
           endTimeline.to(stage.camera.position, {
-            z: stage.getDistance().REST,
+            z: stage.getProfile().REST,
             duration: seconds(1.5),
             ease: 'power2.inOut',
           })
@@ -197,11 +198,11 @@ export const createRoulette = (
       })
     })
 
-  const setRuleset = (next: Ruleset) => {
+  const setTable = (next: Ruleset, nextGold: number[]) => {
     if (isSpinning) return
 
     pockets = next.pockets
-    wheel.setPockets(pockets)
+    wheel.setPockets(pockets, nextGold)
   }
 
   const dispose = () => {
@@ -226,7 +227,12 @@ export const createRoulette = (
     stage.dispose()
   }
 
-  return { spin, setRuleset, dispose }
+  return {
+    spin,
+    setOverlay: wheel.setOverlay,
+    setTable,
+    dispose,
+  }
 }
 
 export type Roulette = ReturnType<typeof createRoulette>

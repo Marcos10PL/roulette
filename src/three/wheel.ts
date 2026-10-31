@@ -7,15 +7,21 @@ import {
   WHEEL_Z,
 } from './constants'
 import type { Pocket } from '../types'
-import { themeValue } from '../const/classes'
-import { drawWheel } from './wheel-texture'
+import { themeValue } from '../utils/theme'
+import { drawWheel, type WheelOverlay } from './wheel-texture'
 
-export const createWheel = (initialPockets: Pocket[]) => {
+export const createWheel = (
+  initialPockets: Pocket[],
+  initialGold: number[],
+) => {
   let pockets = initialPockets
+  let goldIds = initialGold
+  let overlay: WheelOverlay = {}
+  let highlighted = -1
   const brass = themeValue('--color-brass')
 
   const canvas = document.createElement('canvas')
-  drawWheel(canvas, pockets)
+  drawWheel(canvas, pockets, { goldIds })
 
   const texture = new THREE.CanvasTexture(canvas)
   texture.colorSpace = THREE.SRGBColorSpace
@@ -110,12 +116,24 @@ export const createWheel = (initialPockets: Pocket[]) => {
   group.scale.setScalar(WHEEL_SCALE)
 
   const redraw = (highlightIndex = -1) => {
-    drawWheel(canvas, pockets, highlightIndex)
+    highlighted = highlightIndex
+    drawWheel(canvas, pockets, { highlightIndex, goldIds, ...overlay })
     texture.needsUpdate = true
   }
 
-  const setPockets = (nextPockets: Pocket[]) => {
+  const setOverlay = (next: WheelOverlay) => {
+    overlay = next
+    redraw(highlighted)
+  }
+
+  const clearOverlay = () => {
+    overlay = {}
+    redraw()
+  }
+
+  const setPockets = (nextPockets: Pocket[], nextGold: number[]) => {
     pockets = nextPockets
+    goldIds = nextGold
     redraw()
   }
 
@@ -128,5 +146,13 @@ export const createWheel = (initialPockets: Pocket[]) => {
     texture.dispose()
   }
 
-  return { group, arms, redraw, setPockets, dispose }
+  return {
+    group,
+    arms,
+    redraw,
+    setOverlay,
+    clearOverlay,
+    setPockets,
+    dispose,
+  }
 }

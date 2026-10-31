@@ -1,5 +1,7 @@
-import { HOT_NUMBERS_COUNT, POCKET_COLOR, ROUND_OUTCOME } from '../const'
+import { POCKET_COLOR, ROUND_OUTCOME } from '../const'
 import type { PocketColor, SpinRecord, Stats } from '../types'
+
+const HOT_NUMBERS_COUNT = 5
 
 const countersFor = <T extends string>(values: Record<string, T>) =>
   Object.fromEntries(

@@ -13,11 +13,10 @@ import {
 import { vStagger } from '../directives/animate'
 import { useHistoryStore } from '../stores/history'
 import { formatMoneyAmount, formatPercent, formatSigned } from '../utils/format'
-import { cssVar } from '../const/classes'
-import { toneOf } from '../utils/tone'
+import { cssVar } from '../utils/theme'
+import { toneOf, toneTextClass } from '../utils/tone'
 import ResultBadge from './ResultBadge.vue'
 import Modal from './ui/Modal.vue'
-import { TONE_TEXT_CLASSES } from '../const/classes'
 import StackedBar from './ui/StackedBar.vue'
 import StatCard from './ui/StatCard.vue'
 
@@ -141,7 +140,7 @@ const colorsLabel = computed(() =>
           </span>
           <span
             class="w-11 text-right font-mono font-bold sm:w-14"
-            :class="TONE_TEXT_CLASSES[toneOf(record.net)]"
+            :class="toneTextClass(record.net)"
           >
             {{ formatSigned(record.net) }}
           </span>

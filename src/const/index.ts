@@ -1,4 +1,4 @@
-import type { PocketColor, RulesetId, SoundConfig } from '../types'
+import type { Boost, Mode, PocketColor, RulesetId, SoundConfig } from '../types'
 
 export const POCKET_COLOR = {
   RED: 'red',
@@ -12,9 +12,15 @@ export const POCKET_COLOR_TOKEN = {
   [POCKET_COLOR.GREEN]: '--color-pocket-green',
 } as const satisfies Record<PocketColor, string>
 
+export const POCKET_COLOR_BRIGHT_TOKEN = {
+  [POCKET_COLOR.RED]: '--color-pocket-red-bright',
+  [POCKET_COLOR.BLACK]: '--color-pocket-black-bright',
+  [POCKET_COLOR.GREEN]: '--color-pocket-green',
+} as const satisfies Record<PocketColor, string>
+
 export const POCKET_COLOR_BAR_TOKEN = {
   [POCKET_COLOR.RED]: '--color-pocket-red',
-  [POCKET_COLOR.BLACK]: '--color-pocket-black-bar',
+  [POCKET_COLOR.BLACK]: '--color-pocket-black-bright',
   [POCKET_COLOR.GREEN]: '--color-pocket-green',
 } as const satisfies Record<PocketColor, string>
 
@@ -73,13 +79,6 @@ export const BET_IDS = {
   HIGH: '19-36',
   DOZEN: 'dozen-',
   COLUMN: 'column-',
-} as const
-
-// payout ratios, 35 means 35:1
-export const ODDS = {
-  NUMBER: 35,
-  DOZEN_COLUMN: 2,
-  EVEN_MONEY: 1,
 } as const
 
 // id of the "00" pocket on the American wheel
@@ -156,27 +155,115 @@ export const RULESET_DEFINITIONS = {
   { name: string; shortName: string; wheel: number[] }
 >
 
+export const MODE_ID = {
+  STANDARD: 'standard',
+  GOLDEN_SECTOR: 'golden-sector',
+  CONTROL: 'control',
+} as const
+
+export const BOOST_ID = {
+  MAGNET: 'magnet',
+  ZERO_BLOCK: 'zero-block',
+  HALF_WHEEL: 'half-wheel',
+} as const
+
+export const BOOST_BLOCK = {
+  NO_NUMBER: 'no-number',
+  ZERO_BET: 'zero-bet',
+} as const
+
+export const MAGNET = {
+  WEIGHT: 1.5,
+} as const
+
+const BOOSTS_PRICE_PERCENT = {
+  [BOOST_ID.MAGNET]: 50,
+  [BOOST_ID.ZERO_BLOCK]: 7,
+  [BOOST_ID.HALF_WHEEL]: 2,
+} as const
+
+export const BOOSTS = [
+  {
+    id: BOOST_ID.MAGNET,
+    name: 'Magnes',
+    description: `Szansa na postawiony numer wzrasta ${String(MAGNET.WEIGHT).replace('.', ',')}-krotnie. Cena to około ${BOOSTS_PRICE_PERCENT[BOOST_ID.MAGNET]}% postawionej stawki.`,
+    pricePercent: BOOSTS_PRICE_PERCENT[BOOST_ID.MAGNET],
+  },
+  {
+    id: BOOST_ID.ZERO_BLOCK,
+    name: 'Blokada zer',
+    description: `Pola z zerami nie mogą wypaść w tej rundzie. Cena to około ${BOOSTS_PRICE_PERCENT[BOOST_ID.ZERO_BLOCK]}% postawionej stawki.`,
+    pricePercent: BOOSTS_PRICE_PERCENT[BOOST_ID.ZERO_BLOCK],
+  },
+  {
+    id: BOOST_ID.HALF_WHEEL,
+    name: 'Połowa koła',
+    description: `Losowa połowa koła zostaje wyłączona z gry. Cena to około ${BOOSTS_PRICE_PERCENT[BOOST_ID.HALF_WHEEL]}% postawionej stawki.`,
+    pricePercent: BOOSTS_PRICE_PERCENT[BOOST_ID.HALF_WHEEL],
+  },
+] as const satisfies readonly Boost[]
+
+export const GOLDEN_SECTOR = {
+  CHANCE: 0.03,
+} as const
+
+export const GOLDEN_POCKETS = {
+  [RULESET_ID.EUROPEAN]: [35, 3, 26, 32, 15, 19],
+  [RULESET_ID.AMERICAN]: [35, 14, 2, 28, 9, 26],
+} as const satisfies Record<RulesetId, number[]>
+
+export const MODES = [
+  {
+    id: MODE_ID.STANDARD,
+    name: 'Standardowy',
+    description: 'Klasyczna ruletka, każde pole ma taką samą szansę.',
+    odds: {
+      [BET_KIND.NUMBER]: 35,
+      [BET_KIND.COLUMN]: 2,
+      [BET_KIND.DOZEN]: 2,
+      [BET_KIND.OUTSIDE]: 1,
+    },
+    goldenOdds: null,
+    boosts: [],
+  },
+  {
+    id: MODE_ID.GOLDEN_SECTOR,
+    name: 'Złoty sektor',
+    description:
+      'Sześć złotych pól wokół zera. Razem wypadają w około 3% losowań, a nagroda za ich trafienie jest znacznie wyższa. Pomniejszona zostaje natomiast wygrana za trafienie zwykłych pól.',
+    odds: {
+      [BET_KIND.NUMBER]: 30,
+      [BET_KIND.COLUMN]: 2,
+      [BET_KIND.DOZEN]: 2,
+      [BET_KIND.OUTSIDE]: 1,
+    },
+    goldenOdds: 195,
+    boosts: [],
+  },
+  {
+    id: MODE_ID.CONTROL,
+    name: 'Kontrola',
+    description:
+      'Daje możliwość wykupu bonusów przed losowaniem, które zmieniają szanse. Każdy działa przez jedną rundę.',
+    odds: {
+      [BET_KIND.NUMBER]: 35,
+      [BET_KIND.COLUMN]: 2,
+      [BET_KIND.DOZEN]: 2,
+      [BET_KIND.OUTSIDE]: 1,
+    },
+    goldenOdds: null,
+    boosts: [BOOST_ID.MAGNET, BOOST_ID.ZERO_BLOCK, BOOST_ID.HALF_WHEEL],
+  },
+] as const satisfies readonly Mode[]
+
 export const LEADERBOARD_SIZE = 5
 
-// rounds kept per player
 export const HISTORY_LIMIT = 200
 
-export const RECENT_RESULTS_COUNT = 5
 export const HISTORY_LIST_SIZE = 5
-export const HOT_NUMBERS_COUNT = 5
 
 export const TONE = {
   POSITIVE: 'positive',
   NEGATIVE: 'negative',
   NEUTRAL: 'neutral',
-} as const
-
-export const LOCALE = 'pl-PL'
-
-export const PHONE_WIDTH = 640
-
-export const BALANCE_FLASH = {
-  GAIN: '--color-win',
-  LOSS: '--color-loss',
-  REST: '--color-gold',
 } as const

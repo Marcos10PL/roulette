@@ -1,12 +1,12 @@
 import * as THREE from 'three'
-import { PHONE_WIDTH } from '../const'
-import { Z } from './constants'
+import { CAMERA } from './constants'
 
+const PHONE_WIDTH = 640
 const PARTICLE_COUNT = 50
 const MIN_FULL_WHEEL_ASPECT = 0.93
 
-const distanceFor = (width: number) =>
-  width < PHONE_WIDTH ? Z.MOBILE : Z.DESKTOP
+const profileFor = (width: number) =>
+  width < PHONE_WIDTH ? CAMERA.MOBILE : CAMERA.DESKTOP
 
 export const createStage = (container: HTMLElement) => {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
@@ -17,10 +17,10 @@ export const createStage = (container: HTMLElement) => {
   const scene = new THREE.Scene()
   const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000)
 
-  let distance = distanceFor(container.clientWidth || window.innerWidth)
+  let profile = profileFor(container.clientWidth || window.innerWidth)
 
-  camera.position.set(0, 10, distance.REST)
-  camera.lookAt(0, 0, 0)
+  camera.position.set(0, 10, profile.REST)
+  camera.lookAt(0, profile.LOOK_Y, 0)
 
   // point light
   const pointLight = new THREE.PointLight(0xffffff, 1500)
@@ -47,9 +47,10 @@ export const createStage = (container: HTMLElement) => {
     const { clientWidth, clientHeight } = container
     if (!clientWidth || !clientHeight) return
 
-    const next = distanceFor(clientWidth)
-    if (camera.position.z === distance.REST) camera.position.z = next.REST
-    distance = next
+    const next = profileFor(clientWidth)
+    if (camera.position.z === profile.REST) camera.position.z = next.REST
+    profile = next
+    camera.lookAt(0, profile.LOOK_Y, 0)
 
     camera.aspect = clientWidth / clientHeight
     camera.zoom = Math.min(1, camera.aspect / MIN_FULL_WHEEL_ASPECT)
@@ -81,5 +82,5 @@ export const createStage = (container: HTMLElement) => {
     renderer.domElement.remove()
   }
 
-  return { scene, camera, getDistance: () => distance, dispose }
+  return { scene, camera, getProfile: () => profile, dispose }
 }

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, shallowRef } from 'vue'
 import type { Roulette } from '../three/roulette'
+import type { WheelOverlay } from '../three/wheel-texture'
 
 export const useWheelStore = defineStore('wheel', () => {
   const roulette = shallowRef<Roulette | null>(null)
@@ -19,5 +20,8 @@ export const useWheelStore = defineStore('wheel', () => {
     return roulette.value.spin(winningIndex)
   }
 
-  return { isReady, register, spin }
+  const setOverlay = (overlay: WheelOverlay) =>
+    roulette.value?.setOverlay(overlay)
+
+  return { isReady, register, spin, setOverlay }
 })

@@ -6,7 +6,12 @@ import { X } from '@lucide/vue'
 import { nextTick, onBeforeUnmount, useTemplateRef, watch } from 'vue'
 import type { ModalSize } from '../../types'
 import Button from './Button.vue'
-import { MODAL_SIZE_CLASSES } from '../../const/classes'
+
+const MODAL_SIZE_CLASSES: Record<ModalSize, string> = {
+  sm: 'max-w-120',
+  md: 'max-w-180',
+  lg: 'max-w-220',
+} as const
 
 const openModals: (() => void)[] = []
 

@@ -8,13 +8,13 @@ import { useSettingsStore } from '../stores/settings'
 import { formatChipAmount } from '../utils/format'
 import { getTableCells, TABLE_GRID_STYLE } from '../utils/table-layout'
 
-const { ruleset } = storeToRefs(useSettingsStore())
+const { ruleset, modeId } = storeToRefs(useSettingsStore())
 const roundStore = useRoundStore()
 const { isSpinning } = storeToRefs(roundStore)
 const { placeBet, getBetAmount } = roundStore
 const { play } = useAudioStore()
 
-const cells = computed(() => getTableCells(ruleset.value))
+const cells = computed(() => getTableCells(ruleset.value, modeId.value))
 
 const popIn = enterFrom({ scale: 0 }, { duration: 0.35, ease: 'back.out(3)' })
 const shrinkAway = leaveTo({ scale: 0 }, { duration: 0.15 })
@@ -38,11 +38,12 @@ const place = (betId: string) => {
         :style="cell.style"
         :aria-label="cell.ariaLabel"
         class="relative flex cursor-pointer items-center justify-center rounded-md select-none text-xs leading-none font-bold text-white hover:z-10 hover:brightness-125 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-cyan disabled:cursor-not-allowed sm:text-sm"
-        :class="
+        :class="[
           cell.bet.color
             ? ''
-            : 'font-normal tracking-[-0.09rem] text-ink-2 ring-1 ring-line-strong ring-inset'
-        "
+            : 'font-normal tracking-[-0.09rem] text-ink-2 ring-1 ring-line-strong ring-inset',
+          { 'ring-2 ring-gold ring-inset': cell.gold },
+        ]"
         @click="place(cell.bet.id)"
       >
         {{ cell.bet.label }}

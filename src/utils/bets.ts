@@ -1,11 +1,6 @@
-import {
-  BET_IDS,
-  BET_KIND,
-  ODDS,
-  POCKET_COLOR,
-  POCKET_COLOR_LABEL,
-} from '../const'
-import type { BetDefinition, Pocket, Ruleset } from '../types'
+import { BET_IDS, BET_KIND, POCKET_COLOR, POCKET_COLOR_LABEL } from '../const'
+import type { BetDefinition, ModeId, Pocket, Ruleset } from '../types'
+import { oddsFor } from './modes'
 
 const isRegular = (nr: number) => nr >= 1 && nr <= 36
 
@@ -14,7 +9,6 @@ const columnBets: BetDefinition[] = [1, 2, 3].map((column) => ({
   id: `${BET_IDS.COLUMN}${column}`,
   label: '2 do 1',
   kind: BET_KIND.COLUMN,
-  odds: ODDS.DOZEN_COLUMN,
   value: column,
   wins: (winNumber) => isRegular(winNumber) && winNumber % 3 === column % 3,
 }))
@@ -23,7 +17,6 @@ const dozenBets: BetDefinition[] = [1, 2, 3].map((dozen) => ({
   id: `${BET_IDS.DOZEN}${dozen}`,
   label: `${dozen}. 12`,
   kind: BET_KIND.DOZEN,
-  odds: ODDS.DOZEN_COLUMN,
   value: dozen,
   wins: (winNumber) =>
     winNumber >= (dozen - 1) * 12 + 1 && winNumber <= dozen * 12,
@@ -39,7 +32,6 @@ export const buildBets = (pockets: Pocket[]): BetDefinition[] => {
       id: `${BET_IDS.NUMBER}${id}`,
       label,
       kind: BET_KIND.NUMBER,
-      odds: ODDS.NUMBER,
       value: id,
       color,
       wins: (winNumber) => winNumber === id,
@@ -50,14 +42,12 @@ export const buildBets = (pockets: Pocket[]): BetDefinition[] => {
       id: BET_IDS.LOW,
       label: '1 - 18',
       kind: BET_KIND.OUTSIDE,
-      odds: ODDS.EVEN_MONEY,
       wins: (winNumber) => winNumber >= 1 && winNumber <= 18,
     },
     {
       id: BET_IDS.EVEN,
       label: 'Parzyste',
       kind: BET_KIND.OUTSIDE,
-      odds: ODDS.EVEN_MONEY,
       wins: (winNumber) => isRegular(winNumber) && winNumber % 2 === 0,
     },
     {
@@ -65,7 +55,6 @@ export const buildBets = (pockets: Pocket[]): BetDefinition[] => {
       label: POCKET_COLOR_LABEL[POCKET_COLOR.RED],
       kind: BET_KIND.OUTSIDE,
       color: POCKET_COLOR.RED,
-      odds: ODDS.EVEN_MONEY,
       wins: hasColor(POCKET_COLOR.RED),
     },
     {
@@ -73,21 +62,18 @@ export const buildBets = (pockets: Pocket[]): BetDefinition[] => {
       label: POCKET_COLOR_LABEL[POCKET_COLOR.BLACK],
       kind: BET_KIND.OUTSIDE,
       color: POCKET_COLOR.BLACK,
-      odds: ODDS.EVEN_MONEY,
       wins: hasColor(POCKET_COLOR.BLACK),
     },
     {
       id: BET_IDS.ODD,
       label: 'Nieparzyste',
       kind: BET_KIND.OUTSIDE,
-      odds: ODDS.EVEN_MONEY,
       wins: (winNumber) => isRegular(winNumber) && winNumber % 2 === 1,
     },
     {
       id: BET_IDS.HIGH,
       label: '19 - 36',
       kind: BET_KIND.OUTSIDE,
-      odds: ODDS.EVEN_MONEY,
       wins: (winNumber) => winNumber >= 19 && winNumber <= 36,
     },
   ]
@@ -102,24 +88,39 @@ export const calculateWinnings = (
   placedBets: Record<string, number>,
   winNumber: number,
   ruleset: Ruleset,
+  modeId: ModeId,
 ) => {
   let totalWon = 0
 
   for (const [betId, amount] of Object.entries(placedBets)) {
     const bet = getBet(ruleset, betId)
-    if (bet?.wins(winNumber)) totalWon += amount * (bet.odds + 1)
+    if (bet?.wins(winNumber)) {
+      totalWon += amount * (oddsFor(bet, ruleset, modeId) + 1)
+    }
   }
 
   return totalWon
 }
 
+export const coveredPocketIds = (
+  placedBets: Record<string, number>,
+  ruleset: Ruleset,
+) => {
+  const bets = ruleset.bets.filter((bet) => (placedBets[bet.id] ?? 0) > 0)
+
+  return ruleset.pockets
+    .filter((pocket) => bets.some((bet) => bet.wins(pocket.id)))
+    .map((pocket) => pocket.id)
+}
+
 export const bestPayout = (
   placedBets: Record<string, number>,
   ruleset: Ruleset,
+  modeId: ModeId,
 ) =>
   Math.max(
     0,
     ...ruleset.pockets.map((pocket) =>
-      calculateWinnings(placedBets, pocket.id, ruleset),
+      calculateWinnings(placedBets, pocket.id, ruleset, modeId),
     ),
   )

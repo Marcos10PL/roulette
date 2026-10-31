@@ -42,9 +42,11 @@
   --color-ink-3: #9e90cc;
 
   --color-pocket-red: #c0263a;
+  --color-pocket-red-bright: #cc3212;
   --color-pocket-black: #2a2440;
+  --color-pocket-black-bright: #332c1d;
   --color-pocket-green: #138a4a;
-  --color-pocket-black-bar: #4a3f70;
+  --color-pocket-gold: #f5e449;
   --color-pocket-highlight: #fde047;
 
   --color-chip-1: #a1a1aa;
@@ -58,6 +60,7 @@
   --color-brass: #dcae4f;
   --color-rim: #787373;
   --color-wheel-divider: #aaaaaa;
+  --color-wheel-dim: rgb(0 0 0 / 0.7);
   --color-wheel-stud: #c8c8c8;
   --color-wheel-field-top: #302f2f;
   --color-wheel-field-mid: #1c1b1b;

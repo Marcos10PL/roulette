@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { TONE } from '../../const'
 import type { Tone } from '../../types'
-import { TONE_BOX_CLASSES, TONE_TEXT_CLASSES } from '../../const/classes'
+import { TONE_TEXT_CLASSES } from '../../utils/tone'
+
+const TONE_BOX_CLASSES: Record<Tone, string> = {
+  [TONE.POSITIVE]: 'border-win/40 from-win/20 shadow-glow-win',
+  [TONE.NEGATIVE]: 'border-loss/40 from-loss/15 shadow-glow-loss',
+  [TONE.NEUTRAL]: 'border-violet-hi/40 from-violet/25 shadow-glow-info',
+} as const
 
 const {
   tone = TONE.NEUTRAL,

@@ -1,5 +1,5 @@
 import gsap from 'gsap'
-import { themeValue } from '../const/classes'
+import { themeValue } from '../utils/theme'
 import { startPulse } from './effects'
 import { isReducedMotion, seconds } from './motion'
 

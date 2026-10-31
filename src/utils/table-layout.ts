@@ -1,9 +1,11 @@
 import { BET_IDS, BET_KIND, DOUBLE_ZERO, POCKET_COLOR_TOKEN } from '../const'
-import { cssVar } from '../const/classes'
+import { cssVar } from './theme'
+import { isGoldenBet, oddsFor } from './modes'
 import type {
   BetDefinition,
   BetKind,
   CellPlacement,
+  ModeId,
   Ruleset,
   TableCell,
 } from '../types'
@@ -71,19 +73,23 @@ const PLACEMENT: Record<
   }),
 }
 
-export const getTableCells = (ruleset: Ruleset): TableCell[] => {
+export const getTableCells = (
+  ruleset: Ruleset,
+  modeId: ModeId,
+): TableCell[] => {
   const hasDoubleZero = ruleset.pockets.some(
     (pocket) => pocket.id === DOUBLE_ZERO,
   )
 
   return ruleset.bets.map((bet) => ({
     bet,
+    gold: isGoldenBet(bet, ruleset, modeId),
     style: {
       ...PLACEMENT[bet.kind](bet, hasDoubleZero),
       ...(bet.color
         ? { background: cssVar(POCKET_COLOR_TOKEN[bet.color]) }
         : {}),
     },
-    ariaLabel: `${bet.label}, wypłata ${bet.odds}:1`,
+    ariaLabel: `${bet.label}, wypłata ${oddsFor(bet, ruleset, modeId)}:1`,
   }))
 }

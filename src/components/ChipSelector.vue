@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { CHIPS } from '../const'
-import { cssVar } from '../const/classes'
+import { cssVar } from '../utils/theme'
 import { vStagger } from '../directives/animate'
 import { useAudioStore } from '../stores/audio'
 import { useRoundStore } from '../stores/round'

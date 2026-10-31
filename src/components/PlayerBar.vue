@@ -3,13 +3,12 @@ import { storeToRefs } from 'pinia'
 import { Coins, Trash2, UserPen } from '@lucide/vue'
 import { ref, useTemplateRef, watch } from 'vue'
 import { flash } from '../animations/effects'
-import { BALANCE_FLASH } from '../const'
 import { useCountUp } from '../composables/useCountUp'
 import { vStagger } from '../directives/animate'
 import { usePlayerStore } from '../stores/player'
 import { useRoundStore } from '../stores/round'
 import { formatMoneyAmount } from '../utils/format'
-import { themeValue } from '../const/classes'
+import { themeValue } from '../utils/theme'
 import Button from './ui/Button.vue'
 import ConfirmModal from './ui/ConfirmModal.vue'
 
@@ -17,6 +16,12 @@ const { switchPlayer, resetPlayer } = usePlayerStore()
 const { displayedBalance, isSpinning } = storeToRefs(useRoundStore())
 
 const resetOpen = ref(false)
+
+const BALANCE_FLASH = {
+  GAIN: '--color-win',
+  LOSS: '--color-loss',
+  REST: '--color-gold',
+} as const
 
 const shownBalance = useCountUp(() => displayedBalance.value)
 const balanceElement = useTemplateRef<HTMLElement>('balanceElement')
@@ -68,16 +73,13 @@ watch(displayedBalance, (next, previous) => {
     <div class="flex items-center gap-2.5">
       <span
         ref="balanceElement"
-        class="font-mono text-xl font-bold text-gold tabular-nums sm:text-2xl"
+        class="font-mono text-xl font-bold text-gold tabular-nums sm:text-2xl tracking-tight"
         :aria-label="`Saldo: ${formatMoneyAmount(displayedBalance)} monet`"
       >
         {{ formatMoneyAmount(shownBalance) }}
       </span>
-      <span
-        class="grid size-10 place-items-center rounded-full bg-gold/12 text-gold"
-      >
-        <Coins :size="20" />
-      </span>
+
+      <Coins :size="20" class="text-gold" />
     </div>
   </header>
 

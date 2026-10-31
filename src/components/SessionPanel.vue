@@ -9,11 +9,10 @@ import {
 import { vStagger } from '../directives/animate'
 import { useHistoryStore } from '../stores/history'
 import { formatPercent, formatSigned } from '../utils/format'
-import { cssVar } from '../const/classes'
-import { toneOf } from '../utils/tone'
+import { cssVar } from '../utils/theme'
+import { toneTextClass } from '../utils/tone'
 import ResultBadge from './ResultBadge.vue'
 import SectionTitle from './ui/SectionTitle.vue'
-import { TONE_TEXT_CLASSES } from '../const/classes'
 import StackedBar from './ui/StackedBar.vue'
 
 const { stats } = storeToRefs(useHistoryStore())
@@ -60,7 +59,7 @@ const colorsLabel = computed(() =>
             </p>
             <p
               class="font-mono text-3xl font-bold"
-              :class="TONE_TEXT_CLASSES[toneOf(stats.netTotal)]"
+              :class="toneTextClass(stats.netTotal)"
             >
               {{ formatSigned(stats.netTotal) }}
             </p>

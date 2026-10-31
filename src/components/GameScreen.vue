@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import BettingModal from './BettingModal.vue'
+import BoostModal from './BoostModal.vue'
 import GameControls from './GameControls.vue'
 import GameOverModal from './GameOverModal.vue'
 import HistoryModal from './HistoryModal.vue'
 import LeaderboardModal from './LeaderboardModal.vue'
+import ModeModal from './ModeModal.vue'
 import PlayerBar from './PlayerBar.vue'
 import RecentResults from './RecentResults.vue'
 import RouletteScene from './RouletteScene.vue'
@@ -14,8 +16,10 @@ import ToastNotice from './ToastNotice.vue'
 import StarField from './ui/StarField.vue'
 
 const bettingOpen = ref(false)
+const boostsOpen = ref(false)
 const leaderboardOpen = ref(false)
 const historyOpen = ref(false)
+const modeOpen = ref(false)
 </script>
 
 <template>
@@ -35,11 +39,14 @@ const historyOpen = ref(false)
       @bet="bettingOpen = true"
       @ranking="leaderboardOpen = true"
       @history="historyOpen = true"
+      @mode="modeOpen = true"
     />
 
-    <BettingModal v-model="bettingOpen" />
+    <BettingModal v-model="bettingOpen" @boosts="boostsOpen = true" />
+    <BoostModal v-model="boostsOpen" @back="bettingOpen = true" />
     <LeaderboardModal v-model="leaderboardOpen" />
     <HistoryModal v-model="historyOpen" />
+    <ModeModal v-model="modeOpen" />
     <GameOverModal />
     <ToastNotice />
   </div>

@@ -39,5 +39,13 @@ export const RULESETS = Object.values(RULESET_BY_ID)
 export const getRuleset = (id: RulesetId) =>
   RULESET_BY_ID[id] ?? RULESET_BY_ID[RULESET_ID.EUROPEAN]
 
-export const drawWinningIndex = (ruleset: Ruleset) =>
-  Math.floor(Math.random() * ruleset.pockets.length)
+export const drawWinningIndex = (weights: number[]) => {
+  let roll = Math.random() * weights.reduce((sum, weight) => sum + weight, 0)
+
+  for (const [index, weight] of weights.entries()) {
+    roll -= weight
+    if (roll < 0) return index
+  }
+
+  return weights.length - 1
+}

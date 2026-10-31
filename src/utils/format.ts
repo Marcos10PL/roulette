@@ -1,4 +1,4 @@
-import { LOCALE } from '../const'
+const LOCALE = 'pl-PL'
 
 export const formatChipAmount = (amount: number) => {
   return amount >= 1000

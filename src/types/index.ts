@@ -5,6 +5,9 @@ import type {
   RULESET_ID,
   SOUNDS,
   TONE,
+  MODE_ID,
+  BOOST_BLOCK,
+  BOOST_ID,
 } from '../const'
 
 export type SoundName = keyof typeof SOUNDS
@@ -12,6 +15,9 @@ export type RoundOutcome = (typeof ROUND_OUTCOME)[keyof typeof ROUND_OUTCOME]
 export type BetKind = (typeof BET_KIND)[keyof typeof BET_KIND]
 export type PocketColor = (typeof POCKET_COLOR)[keyof typeof POCKET_COLOR]
 export type RulesetId = (typeof RULESET_ID)[keyof typeof RULESET_ID]
+export type ModeId = (typeof MODE_ID)[keyof typeof MODE_ID]
+export type BoostBlock = (typeof BOOST_BLOCK)[keyof typeof BOOST_BLOCK]
+export type BoostId = (typeof BOOST_ID)[keyof typeof BOOST_ID]
 export type ModalSize = 'sm' | 'md' | 'lg'
 export type BadgeSize = 'md' | 'lg'
 export type ButtonVariant = 'primary' | 'ghost' | 'quiet' | 'danger'
@@ -38,9 +44,17 @@ export type Player = {
 
 export type ActiveRound = {
   rulesetId: RulesetId
+  modeId: ModeId
   placedBets: Record<string, number>
+  boosts: BoostId[]
+  halfStart: number
   totalStaked: number
 }
+
+export type BoostContext = Pick<
+  ActiveRound,
+  'boosts' | 'placedBets' | 'halfStart'
+>
 
 export type RoundResult = {
   net: number
@@ -57,7 +71,6 @@ export type BetDefinition = {
   id: string
   label: string
   kind: BetKind
-  odds: number
   value?: number
   color?: PocketColor
   wins: (winNumber: number) => boolean
@@ -82,8 +95,25 @@ export type CellPlacement = {
   gridRow: string
 }
 
+export type Mode = {
+  id: ModeId
+  name: string
+  description: string
+  odds: Record<BetKind, number>
+  goldenOdds: number | null
+  boosts: readonly BoostId[]
+}
+
+export type Boost = {
+  id: BoostId
+  name: string
+  description: string
+  pricePercent: number
+}
+
 export type TableCell = {
   bet: BetDefinition
+  gold: boolean
   style: Record<string, string>
   ariaLabel: string
 }
@@ -91,6 +121,7 @@ export type TableCell = {
 export type SpinRecord = {
   player: string
   rulesetId: RulesetId
+  modeId: ModeId
   pocketId: number
   label: string
   color: PocketColor

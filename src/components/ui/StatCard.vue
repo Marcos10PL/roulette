@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { TONE } from '../../const'
 import type { Tone } from '../../types'
-import { TONE_TEXT_CLASSES } from '../../const/classes'
+import { TONE_TEXT_CLASSES } from '../../utils/tone'
 
 const { tone = TONE.NEUTRAL } = defineProps<{
   label: string

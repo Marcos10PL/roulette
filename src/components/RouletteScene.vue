@@ -7,7 +7,7 @@ import { useWheelStore } from '../stores/wheel'
 import { createRoulette, type Roulette } from '../three/roulette'
 
 const container = useTemplateRef<HTMLDivElement>('container')
-const { ruleset } = storeToRefs(useSettingsStore())
+const { ruleset, goldPocketIds } = storeToRefs(useSettingsStore())
 const { play } = useAudioStore()
 const { register } = useWheelStore()
 
@@ -16,13 +16,20 @@ let roulette: Roulette | null = null
 onMounted(() => {
   if (!container.value) return
 
-  roulette = createRoulette(container.value, ruleset.value, {
-    onTick: () => play('TICK'),
-  })
+  roulette = createRoulette(
+    container.value,
+    ruleset.value,
+    goldPocketIds.value,
+    {
+      onTick: () => play('TICK'),
+    },
+  )
   register(roulette)
 })
 
-watch(ruleset, (next) => roulette?.setRuleset(next))
+watch([ruleset, goldPocketIds], ([next, gold]) =>
+  roulette?.setTable(next, gold),
+)
 
 onBeforeUnmount(() => {
   register(null)

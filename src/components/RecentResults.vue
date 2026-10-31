@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import { RECENT_RESULTS_COUNT } from '../const'
 import { useHistoryStore } from '../stores/history'
 import { useRoundStore } from '../stores/round'
 import { formatSigned } from '../utils/format'
-import { toneOf } from '../utils/tone'
+import { toneTextClass } from '../utils/tone'
 import ResultBadge from './ResultBadge.vue'
-import { TONE_TEXT_CLASSES } from '../const/classes'
+
+const RECENT_RESULTS_COUNT = 5
 
 const { playerRecords, stats } = storeToRefs(useHistoryStore())
 const { isSpinning } = storeToRefs(useRoundStore())
@@ -48,10 +48,7 @@ const recent = computed(() =>
       Rundy
       <strong class="font-mono text-ink">{{ stats.rounds }}</strong>
       · Bilans
-      <strong
-        class="font-mono"
-        :class="TONE_TEXT_CLASSES[toneOf(stats.netTotal)]"
-      >
+      <strong class="font-mono" :class="toneTextClass(stats.netTotal)">
         {{ formatSigned(stats.netTotal) }}
       </strong>
     </p>
