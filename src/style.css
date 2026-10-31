@@ -14,7 +14,7 @@
   font-display: swap;
 }
 
-@theme {
+@theme static {
   --font-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, Menlo, Consolas, monospace;
   --font-sans: var(--font-mono);
@@ -41,6 +41,29 @@
   --color-ink-2: #cbbff0;
   --color-ink-3: #9e90cc;
 
+  --color-pocket-red: #c0263a;
+  --color-pocket-black: #2a2440;
+  --color-pocket-green: #138a4a;
+  --color-pocket-black-bar: #4a3f70;
+  --color-pocket-highlight: #fde047;
+
+  --color-chip-1: #a1a1aa;
+  --color-chip-5: #ef4444;
+  --color-chip-10: #3b82f6;
+  --color-chip-50: #22c55e;
+  --color-chip-100: #64748b;
+  --color-chip-500: #a855f7;
+
+  --color-pointer: #edda47;
+  --color-brass: #dcae4f;
+  --color-rim: #787373;
+  --color-wheel-divider: #aaaaaa;
+  --color-wheel-stud: #c8c8c8;
+  --color-wheel-field-top: #302f2f;
+  --color-wheel-field-mid: #1c1b1b;
+  --color-wheel-field-edge: #8a8a8a;
+  --color-wheel-ring: #262624;
+
   --shadow-glow-primary:
     inset 0 1px 0 rgb(255 255 255 / 0.25), 0 0 18px rgb(124 58 237 / 0.45);
   --shadow-glow-win: 0 0 22px rgb(52 245 164 / 0.25);
@@ -50,6 +73,10 @@
   --shadow-field-focus:
     inset 0 0 20px rgb(124 58 237 / 0.25), 0 0 0 4px rgb(124 58 237 / 0.25);
   --drop-shadow-neon: 0 0 6px var(--color-violet-neon);
+
+  --shadow-glow-pulse: 0 0 28px rgba(124, 58, 237, 0.7);
+  --glow-logo-rest: drop-shadow(0 0 8px rgba(124, 58, 237, 0.45));
+  --glow-logo-peak: drop-shadow(0 0 26px rgba(139, 92, 246, 1));
   --shadow-modal:
     inset 0 1px 0 rgb(255 255 255 / 0.06), 0 20px 50px rgb(0 0 0 / 0.35);
 }

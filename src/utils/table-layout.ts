@@ -1,4 +1,5 @@
-import { BET_IDS, BET_KIND, DOUBLE_ZERO, POCKET_COLOR_HEX } from '../const'
+import { BET_IDS, BET_KIND, DOUBLE_ZERO, POCKET_COLOR_TOKEN } from '../const'
+import { cssVar } from '../const/classes'
 import type {
   BetDefinition,
   BetKind,
@@ -79,7 +80,9 @@ export const getTableCells = (ruleset: Ruleset): TableCell[] => {
     bet,
     style: {
       ...PLACEMENT[bet.kind](bet, hasDoubleZero),
-      ...(bet.color ? { background: POCKET_COLOR_HEX[bet.color] } : {}),
+      ...(bet.color
+        ? { background: cssVar(POCKET_COLOR_TOKEN[bet.color]) }
+        : {}),
     },
     ariaLabel: `${bet.label}, wypłata ${bet.odds}:1`,
   }))

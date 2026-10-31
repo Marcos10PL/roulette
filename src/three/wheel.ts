@@ -7,12 +7,12 @@ import {
   WHEEL_Z,
 } from './constants'
 import type { Pocket } from '../types'
+import { themeValue } from '../const/classes'
 import { drawWheel } from './wheel-texture'
-
-const GOLD = '#dcae4f'
 
 export const createWheel = (initialPockets: Pocket[]) => {
   let pockets = initialPockets
+  const brass = themeValue('--color-brass')
 
   const canvas = document.createElement('canvas')
   drawWheel(canvas, pockets)
@@ -37,7 +37,7 @@ export const createWheel = (initialPockets: Pocket[]) => {
   const rim = new THREE.Mesh(
     new THREE.TorusGeometry(WHEEL_RIM_RADIUS, 0.35, 16, 128),
     new THREE.MeshStandardMaterial({
-      color: 0x787373,
+      color: themeValue('--color-rim'),
       metalness: 0.9,
       roughness: 0.3,
     }),
@@ -48,7 +48,7 @@ export const createWheel = (initialPockets: Pocket[]) => {
   const bossUnder = new THREE.Mesh(
     new THREE.CylinderGeometry(0.7, 0.5, 0.8, 128),
     new THREE.MeshStandardMaterial({
-      color: GOLD,
+      color: brass,
       metalness: 0.9,
       roughness: 0.4,
     }),
@@ -60,7 +60,7 @@ export const createWheel = (initialPockets: Pocket[]) => {
   const boss = new THREE.Mesh(
     new THREE.CylinderGeometry(0.35, 0.5, 4.2, 64),
     new THREE.MeshStandardMaterial({
-      color: GOLD,
+      color: brass,
       metalness: 0.9,
       roughness: 0.5,
     }),
@@ -72,10 +72,10 @@ export const createWheel = (initialPockets: Pocket[]) => {
   const bossGlobe = new THREE.Mesh(
     new THREE.SphereGeometry(0.65, 64, 64),
     new THREE.MeshStandardMaterial({
-      color: GOLD,
+      color: brass,
       roughness: 0.7,
       metalness: 0.5,
-      emissive: GOLD,
+      emissive: brass,
       emissiveIntensity: 0.12,
     }),
   )

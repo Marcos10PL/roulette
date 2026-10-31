@@ -48,3 +48,8 @@ export const BADGE_SIZE_CLASSES: Record<BadgeSize, string> = {
   md: 'size-6 text-xs sm:size-7',
   lg: 'size-10 text-base',
 }
+
+export const cssVar = (token: string) => `var(${token})`
+
+export const themeValue = (token: string) =>
+  getComputedStyle(document.documentElement).getPropertyValue(token).trim()

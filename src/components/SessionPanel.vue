@@ -3,12 +3,13 @@ import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import {
   POCKET_COLOR,
-  POCKET_COLOR_BAR_HEX,
+  POCKET_COLOR_BAR_TOKEN,
   POCKET_COLOR_LABEL,
 } from '../const'
 import { vStagger } from '../directives/animate'
 import { useHistoryStore } from '../stores/history'
 import { formatPercent, formatSigned } from '../utils/format'
+import { cssVar } from '../const/classes'
 import { toneOf } from '../utils/tone'
 import ResultBadge from './ResultBadge.vue'
 import SectionTitle from './ui/SectionTitle.vue'
@@ -21,7 +22,7 @@ const COLORS = Object.values(POCKET_COLOR)
 
 const colors = computed(() =>
   COLORS.map((color) => ({
-    color: POCKET_COLOR_BAR_HEX[color],
+    color: cssVar(POCKET_COLOR_BAR_TOKEN[color]),
     share: stats.value.colors[color].share,
   })),
 )

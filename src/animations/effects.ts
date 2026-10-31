@@ -20,6 +20,7 @@ export const enterFrom =
       duration: seconds(duration),
       delay: seconds(delay),
       ease,
+      clearProps: Object.keys(from).join(','),
       onComplete: done,
     })
   }

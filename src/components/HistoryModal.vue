@@ -4,7 +4,7 @@ import { computed } from 'vue'
 import {
   HISTORY_LIST_SIZE,
   POCKET_COLOR,
-  POCKET_COLOR_BAR_HEX,
+  POCKET_COLOR_BAR_TOKEN,
   POCKET_COLOR_LABEL,
   ROUND_OUTCOME,
   ROUND_OUTCOME_LABEL,
@@ -13,6 +13,7 @@ import {
 import { vStagger } from '../directives/animate'
 import { useHistoryStore } from '../stores/history'
 import { formatMoneyAmount, formatPercent, formatSigned } from '../utils/format'
+import { cssVar } from '../const/classes'
 import { toneOf } from '../utils/tone'
 import ResultBadge from './ResultBadge.vue'
 import Modal from './ui/Modal.vue'
@@ -61,7 +62,7 @@ const summary = computed(() => [
 const colorSegments = computed(() =>
   COLORS.map((color) => ({
     share: stats.value.colors[color].share,
-    color: POCKET_COLOR_BAR_HEX[color],
+    color: cssVar(POCKET_COLOR_BAR_TOKEN[color]),
   })),
 )
 

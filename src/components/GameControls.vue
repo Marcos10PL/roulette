@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { History, Medal, Volume2, VolumeX } from '@lucide/vue'
 import {
   enterFrom,
@@ -10,6 +11,7 @@ import {
 import { vStagger } from '../directives/animate'
 import { useAudioStore } from '../stores/audio'
 import { useRoundStore } from '../stores/round'
+import { themeValue } from '../const/classes'
 import Button from './ui/Button.vue'
 import RulesetSwitch from './RulesetSwitch.vue'
 
@@ -20,7 +22,16 @@ const audio = useAudioStore()
 const { muted } = storeToRefs(audio)
 const { toggleMute } = audio
 
-const GLOW = { boxShadow: '0 0 28px rgba(124, 58, 237, 0.7)' }
+const phone = window.matchMedia('(max-width: 639px)')
+const isPhone = ref(phone.matches)
+const updatePhone = () => (isPhone.value = phone.matches)
+
+onMounted(() => phone.addEventListener('change', updatePhone))
+onBeforeUnmount(() => phone.removeEventListener('change', updatePhone))
+
+const showSpinButton = computed(() => isPhone.value || !isSpinning.value)
+
+const GLOW = { boxShadow: themeValue('--shadow-glow-pulse') }
 
 const onSpinButtonEnter = withPulse(
   enterFrom(
@@ -85,7 +96,8 @@ const onSpinButtonLeave = withoutPulse(
         @leave="onSpinButtonLeave"
       >
         <Button
-          v-show="!isSpinning"
+          v-show="showSpinButton"
+          :disabled="isSpinning"
           variant="primary"
           size="xl"
           class="flex-1 sm:col-start-2 sm:row-start-1 sm:flex-none"

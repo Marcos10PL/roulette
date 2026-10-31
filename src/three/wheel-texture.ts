@@ -1,5 +1,6 @@
-import { POCKET_COLOR_HEX } from '../const'
+import { POCKET_COLOR_TOKEN } from '../const'
 import type { Pocket } from '../types'
+import { themeValue } from '../const/classes'
 
 const SIZE = 1024
 const TWO_PI = Math.PI * 2
@@ -24,6 +25,10 @@ export const drawWheel = (
   const cy = SIZE / 2
   const R = SIZE * 0.54
 
+  const divider = themeValue('--color-wheel-divider')
+  const highlight = themeValue('--color-pocket-highlight')
+  const stud = themeValue('--color-wheel-stud')
+
   // pocket segments
   const N = pockets.length
   const slice = TWO_PI / N
@@ -39,13 +44,13 @@ export const drawWheel = (
     ctx.arc(cx, cy, segInner, a1, a0, true)
     ctx.closePath()
 
-    ctx.fillStyle = POCKET_COLOR_HEX[pockets[i].color]
+    ctx.fillStyle = themeValue(POCKET_COLOR_TOKEN[pockets[i].color])
     ctx.fill()
 
     ctx.beginPath()
     ctx.moveTo(cx + Math.cos(a0) * segInner, cy + Math.sin(a0) * segInner)
     ctx.lineTo(cx + Math.cos(a0) * segOuter, cy + Math.sin(a0) * segOuter)
-    ctx.strokeStyle = 'rgba(170,170,170)'
+    ctx.strokeStyle = divider
     ctx.lineWidth = 2
     ctx.stroke()
   }
@@ -64,7 +69,7 @@ export const drawWheel = (
     ctx.translate(cx + Math.cos(mid) * tr, cy + Math.sin(mid) * tr)
     ctx.rotate(mid + Math.PI / 2)
     ctx.font = `bold ${isWinner ? fontSize * 1.2 : fontSize}px Arial`
-    ctx.shadowColor = isWinner ? '#fde047' : 'rgba(0,0,0,0.95)'
+    ctx.shadowColor = isWinner ? highlight : 'rgba(0,0,0,0.95)'
     ctx.shadowBlur = isWinner ? 8 : 5
     ctx.fillStyle = '#fff'
     ctx.fillText(pockets[i].label, 0, 0)
@@ -88,23 +93,23 @@ export const drawWheel = (
     ctx.lineTo(0, dSize)
     ctx.lineTo(-dSize * 0.55, 0)
     ctx.closePath()
-    ctx.fillStyle = '#c8c8c8'
+    ctx.fillStyle = stud
     ctx.fill()
     ctx.restore()
   }
 
   // inner field
   const innerGrad = ctx.createRadialGradient(cx, cy, R * 0.22, cx, cy, R * 0.58)
-  innerGrad.addColorStop(0, '#302f2f')
-  innerGrad.addColorStop(0.5, '#1c1b1b')
-  innerGrad.addColorStop(1, '#8a8a8a')
+  innerGrad.addColorStop(0, themeValue('--color-wheel-field-top'))
+  innerGrad.addColorStop(0.5, themeValue('--color-wheel-field-mid'))
+  innerGrad.addColorStop(1, themeValue('--color-wheel-field-edge'))
   ctx.beginPath()
   ctx.arc(cx, cy, R * 0.48, 0, TWO_PI)
   ctx.fillStyle = innerGrad
   ctx.fill()
 
   // two rings
-  ctx.strokeStyle = '#262624'
+  ctx.strokeStyle = themeValue('--color-wheel-ring')
   ctx.lineWidth = R * 0.01
 
   ctx.beginPath()

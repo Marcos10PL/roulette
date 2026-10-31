@@ -9,6 +9,7 @@ import { vStagger } from '../directives/animate'
 import { usePlayerStore } from '../stores/player'
 import { useRoundStore } from '../stores/round'
 import { formatMoneyAmount } from '../utils/format'
+import { themeValue } from '../const/classes'
 import Button from './ui/Button.vue'
 import ConfirmModal from './ui/ConfirmModal.vue'
 
@@ -25,10 +26,12 @@ watch(displayedBalance, (next, previous) => {
     flash(
       balanceElement.value,
       {
-        color: next > previous ? BALANCE_FLASH.GAIN : BALANCE_FLASH.LOSS,
+        color: themeValue(
+          next > previous ? BALANCE_FLASH.GAIN : BALANCE_FLASH.LOSS,
+        ),
         scale: 1.15,
       },
-      { color: BALANCE_FLASH.REST, scale: 1 },
+      { color: themeValue(BALANCE_FLASH.REST), scale: 1 },
       { duration: 0.9 },
     )
 })

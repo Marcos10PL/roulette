@@ -1,3 +1,4 @@
+import { themeValue } from '../const/classes'
 import gsap from 'gsap'
 import * as THREE from 'three'
 import {
@@ -11,8 +12,6 @@ import type { Ruleset } from '../types'
 import { isReducedMotion, seconds } from '../animations/motion'
 import { createStage } from './stage'
 import { createWheel } from './wheel'
-
-const POINTER_COLOR = '#EDDA47'
 
 const TWO_PI = Math.PI * 2
 const IDLE_SPEED = 0.06
@@ -37,15 +36,16 @@ export const createRoulette = (
   const wheel = createWheel(ruleset.pockets)
   stage.scene.add(wheel.group)
 
-  const pointerLight = new THREE.PointLight(POINTER_COLOR, 0, 18)
+  const pointerColor = themeValue('--color-pointer')
+  const pointerLight = new THREE.PointLight(pointerColor, 0, 18)
   pointerLight.position.set(0, POINTER_TOP_Y + 0.5, WHEEL_Z)
 
   const pointerGeometry = new THREE.ConeGeometry(0.2, 0.5, 64)
   const pointerMaterial = new THREE.MeshStandardMaterial({
-    color: POINTER_COLOR,
+    color: pointerColor,
     roughness: 0.7,
     metalness: 0.3,
-    emissive: POINTER_COLOR,
+    emissive: pointerColor,
     emissiveIntensity: 0.5,
   })
   const pointer = new THREE.Mesh(pointerGeometry, pointerMaterial)

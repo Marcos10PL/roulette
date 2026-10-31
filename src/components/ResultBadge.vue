@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { POCKET_COLOR_HEX, POCKET_COLOR_LABEL } from '../const'
+import { POCKET_COLOR_LABEL, POCKET_COLOR_TOKEN } from '../const'
 import type { BadgeSize, PocketColor } from '../types'
+import { cssVar } from '../const/classes'
 import Badge from './ui/Badge.vue'
 
 defineProps<{ label: string; color: PocketColor; size?: BadgeSize }>()
@@ -8,7 +9,7 @@ defineProps<{ label: string; color: PocketColor; size?: BadgeSize }>()
 
 <template>
   <Badge
-    :color="POCKET_COLOR_HEX[color]"
+    :color="cssVar(POCKET_COLOR_TOKEN[color])"
     :size="size"
     :aria-label="`${label}, ${POCKET_COLOR_LABEL[color].toLowerCase()}`"
   >

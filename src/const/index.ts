@@ -6,16 +6,16 @@ export const POCKET_COLOR = {
   GREEN: 'green',
 } as const
 
-export const POCKET_COLOR_HEX = {
-  [POCKET_COLOR.RED]: '#c0263a',
-  [POCKET_COLOR.BLACK]: '#2a2440',
-  [POCKET_COLOR.GREEN]: '#138a4a',
+export const POCKET_COLOR_TOKEN = {
+  [POCKET_COLOR.RED]: '--color-pocket-red',
+  [POCKET_COLOR.BLACK]: '--color-pocket-black',
+  [POCKET_COLOR.GREEN]: '--color-pocket-green',
 } as const satisfies Record<PocketColor, string>
 
-export const POCKET_COLOR_BAR_HEX = {
-  [POCKET_COLOR.RED]: '#c0263a',
-  [POCKET_COLOR.BLACK]: '#4a3f70',
-  [POCKET_COLOR.GREEN]: '#138a4a',
+export const POCKET_COLOR_BAR_TOKEN = {
+  [POCKET_COLOR.RED]: '--color-pocket-red',
+  [POCKET_COLOR.BLACK]: '--color-pocket-black-bar',
+  [POCKET_COLOR.GREEN]: '--color-pocket-green',
 } as const satisfies Record<PocketColor, string>
 
 export const POCKET_COLOR_LABEL = {
@@ -46,12 +46,12 @@ export const ROUND_OUTCOME_LABEL = {
 export const START_BALANCE = 1000
 
 export const CHIPS = [
-  { value: 1, color: '#a1a1aa' },
-  { value: 5, color: '#ef4444' },
-  { value: 10, color: '#3b82f6' },
-  { value: 50, color: '#22c55e' },
-  { value: 100, color: '#64748b' },
-  { value: 500, color: '#a855f7' },
+  { value: 1, token: '--color-chip-1' },
+  { value: 5, token: '--color-chip-5' },
+  { value: 10, token: '--color-chip-10' },
+  { value: 50, token: '--color-chip-50' },
+  { value: 100, token: '--color-chip-100' },
+  { value: 500, token: '--color-chip-500' },
 ] as const
 
 export const SOUNDS = {
@@ -174,7 +174,7 @@ export const TONE = {
 export const LOCALE = 'pl-PL'
 
 export const BALANCE_FLASH = {
-  GAIN: '#34f5a4',
-  LOSS: '#ff7a95',
-  REST: '#fcd34d',
+  GAIN: '--color-win',
+  LOSS: '--color-loss',
+  REST: '--color-gold',
 } as const

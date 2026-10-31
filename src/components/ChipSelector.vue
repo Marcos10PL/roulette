@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { CHIPS } from '../const'
+import { cssVar } from '../const/classes'
 import { vStagger } from '../directives/animate'
 import { useAudioStore } from '../stores/audio'
 import { useRoundStore } from '../stores/round'
@@ -38,7 +39,7 @@ const select = (value: number) => {
           '-translate-y-1 ring-2 ring-cyan ring-offset-2 ring-offset-ground':
             selectedChip === chip.value,
         }"
-        :style="{ background: chip.color }"
+        :style="{ background: cssVar(chip.token) }"
       >
         <span
           class="relative grid size-6.5 place-items-center rounded-full bg-chip-core font-mono text-xs font-bold text-white sm:size-8 sm:text-xs"

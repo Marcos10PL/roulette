@@ -1,9 +1,7 @@
 import gsap from 'gsap'
+import { themeValue } from '../const/classes'
 import { startPulse } from './effects'
 import { isReducedMotion, seconds } from './motion'
-
-const GLOW_REST = 'drop-shadow(0 0 8px rgba(124, 58, 237, 0.45))'
-const GLOW_PEAK = 'drop-shadow(0 0 26px rgba(139, 92, 246, 1))'
 
 type Parts = {
   letters: HTMLElement[]
@@ -48,8 +46,8 @@ export const playStartScreen = ({ letters, lines, star, coinIcon }: Parts) => {
       )
 
     // glowing letters
-    gsap.set(letters, { filter: GLOW_REST })
-    startPulse(letters, { filter: GLOW_PEAK }, 1.5)
+    gsap.set(letters, { filter: themeValue('--glow-logo-rest') })
+    startPulse(letters, { filter: themeValue('--glow-logo-peak') }, 1.5)
 
     if (isReducedMotion()) return
 
