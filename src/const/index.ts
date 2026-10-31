@@ -173,6 +173,8 @@ export const TONE = {
 
 export const LOCALE = 'pl-PL'
 
+export const PHONE_WIDTH = 640
+
 export const BALANCE_FLASH = {
   GAIN: '--color-win',
   LOSS: '--color-loss',

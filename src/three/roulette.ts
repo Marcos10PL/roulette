@@ -109,7 +109,7 @@ export const createRoulette = (
       spinTimeline = gsap.timeline()
 
       spinTimeline.to(stage.camera.position, {
-        z: 35,
+        z: stage.getDistance().SPIN,
         duration: seconds(1.5),
         ease: 'power2',
         onStart: () => {
@@ -189,7 +189,7 @@ export const createRoulette = (
           endTimeline.to(pointerLight, { intensity: 0, duration: 0.4 }, '<')
 
           endTimeline.to(stage.camera.position, {
-            z: 40,
+            z: stage.getDistance().REST,
             duration: seconds(1.5),
             ease: 'power2.inOut',
           })

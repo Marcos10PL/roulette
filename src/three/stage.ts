@@ -1,7 +1,12 @@
 import * as THREE from 'three'
+import { PHONE_WIDTH } from '../const'
+import { Z } from './constants'
 
 const PARTICLE_COUNT = 50
 const MIN_FULL_WHEEL_ASPECT = 0.93
+
+const distanceFor = (width: number) =>
+  width < PHONE_WIDTH ? Z.MOBILE : Z.DESKTOP
 
 export const createStage = (container: HTMLElement) => {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
@@ -11,7 +16,10 @@ export const createStage = (container: HTMLElement) => {
 
   const scene = new THREE.Scene()
   const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000)
-  camera.position.set(0, 10, 40)
+
+  let distance = distanceFor(container.clientWidth || window.innerWidth)
+
+  camera.position.set(0, 10, distance.REST)
   camera.lookAt(0, 0, 0)
 
   // point light
@@ -29,7 +37,7 @@ export const createStage = (container: HTMLElement) => {
 
     particle.position.x = (Math.random() - 0.5) * 100
     particle.position.y = (Math.random() - 0.5) * 100
-    particle.position.z = (Math.random() - 0.5) * 40
+    particle.position.z = (Math.random() - 0.5) * 35
 
     scene.add(particle)
     particles.push(particle)
@@ -38,6 +46,10 @@ export const createStage = (container: HTMLElement) => {
   const resize = () => {
     const { clientWidth, clientHeight } = container
     if (!clientWidth || !clientHeight) return
+
+    const next = distanceFor(clientWidth)
+    if (camera.position.z === distance.REST) camera.position.z = next.REST
+    distance = next
 
     camera.aspect = clientWidth / clientHeight
     camera.zoom = Math.min(1, camera.aspect / MIN_FULL_WHEEL_ASPECT)
@@ -69,5 +81,5 @@ export const createStage = (container: HTMLElement) => {
     renderer.domElement.remove()
   }
 
-  return { scene, camera, dispose }
+  return { scene, camera, getDistance: () => distance, dispose }
 }
