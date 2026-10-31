@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { vStagger } from '../directives/animate'
-import { useSettingsStore } from '../stores/settings'
-import type { ModeId } from '../types'
-import { MODES } from '../const'
-import ModeIcon from './ModeIcon.vue'
-import Modal from './ui/Modal.vue'
-import OptionCard from './ui/OptionCard.vue'
+import { vStagger } from '../../directives/animate'
+import { useSettingsStore } from '../../stores/settings'
+import type { ModeId } from '../../types'
+import { MODES } from '../../const'
+import ModeIcon from '../shared/ModeIcon.vue'
+import Modal from '../ui/Modal.vue'
+import OptionCard from '../ui/OptionCard.vue'
 
 const open = defineModel<boolean>({ required: true })
 

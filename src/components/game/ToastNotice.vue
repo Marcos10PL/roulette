@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Star } from '@lucide/vue'
 import { storeToRefs } from 'pinia'
-import { fadeIn, fadeOut } from '../animations/effects'
-import { useToastStore } from '../stores/toast'
-import ResultBadge from './ResultBadge.vue'
-import Toast from './ui/Toast.vue'
+import { fadeIn, fadeOut } from '../../animations/effects'
+import { useToastStore } from '../../stores/toast'
+import ResultBadge from '../shared/ResultBadge.vue'
+import Toast from '../ui/Toast.vue'
 
 const { toast } = storeToRefs(useToastStore())
 

@@ -1,6 +1,5 @@
 import { BET_IDS, BET_KIND, POCKET_COLOR, POCKET_COLOR_LABEL } from '../const'
-import type { BetDefinition, ModeId, Pocket, Ruleset } from '../types'
-import { oddsFor } from './modes'
+import type { BetDefinition, Game, Pocket, Slip } from '../types'
 
 const isRegular = (nr: number) => nr >= 1 && nr <= 36
 
@@ -81,46 +80,66 @@ export const buildBets = (pockets: Pocket[]): BetDefinition[] => {
   return [...numberBets, ...columnBets, ...dozenBets, ...outsideBets]
 }
 
-const getBet = (ruleset: Ruleset, betId: string) =>
-  ruleset.bets.find((bet) => bet.id === betId)
+export const summarizeBets = (
+  game: Game,
+  placedBets: Record<string, number>,
+): Slip => {
+  const numbers: Slip['numbers'] = []
+  let total = 0
+
+  for (const [betId, amount] of Object.entries(placedBets)) {
+    total += amount
+
+    const bet = game.betsById.get(betId)
+    if (bet?.kind === BET_KIND.NUMBER && bet.value !== undefined) {
+      numbers.push({ id: bet.value, amount })
+    }
+  }
+
+  const zeroIds = new Set(
+    game.ruleset.pockets
+      .filter((pocket) => pocket.color === POCKET_COLOR.GREEN)
+      .map((pocket) => pocket.id),
+  )
+
+  return {
+    placedBets: { ...placedBets },
+    total,
+    numbers,
+    onZero: numbers.some((number) => zeroIds.has(number.id)),
+  }
+}
 
 export const calculateWinnings = (
-  placedBets: Record<string, number>,
+  game: Game,
+  slip: Slip,
   winNumber: number,
-  ruleset: Ruleset,
-  modeId: ModeId,
 ) => {
   let totalWon = 0
 
-  for (const [betId, amount] of Object.entries(placedBets)) {
-    const bet = getBet(ruleset, betId)
-    if (bet?.wins(winNumber)) {
-      totalWon += amount * (oddsFor(bet, ruleset, modeId) + 1)
+  for (const [betId, amount] of Object.entries(slip.placedBets)) {
+    if (game.betsById.get(betId)?.wins(winNumber)) {
+      totalWon += amount * (game.odds[betId] + 1)
     }
   }
 
   return totalWon
 }
 
-export const coveredPocketIds = (
-  placedBets: Record<string, number>,
-  ruleset: Ruleset,
-) => {
-  const bets = ruleset.bets.filter((bet) => (placedBets[bet.id] ?? 0) > 0)
+export const coveredPocketIds = (game: Game, slip: Slip) => {
+  const bets = Object.keys(slip.placedBets).flatMap(
+    (id) => game.betsById.get(id) ?? [],
+  )
 
-  return ruleset.pockets
+  return game.ruleset.pockets
     .filter((pocket) => bets.some((bet) => bet.wins(pocket.id)))
     .map((pocket) => pocket.id)
 }
 
-export const bestPayout = (
-  placedBets: Record<string, number>,
-  ruleset: Ruleset,
-  modeId: ModeId,
-) =>
+export const bestPayout = (game: Game, slip: Slip) =>
   Math.max(
     0,
-    ...ruleset.pockets.map((pocket) =>
-      calculateWinnings(placedBets, pocket.id, ruleset, modeId),
+    ...game.ruleset.pockets.map((pocket) =>
+      calculateWinnings(game, slip, pocket.id),
     ),
   )

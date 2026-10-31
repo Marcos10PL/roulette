@@ -8,7 +8,7 @@ import {
   WHEEL_TILT,
   WHEEL_Z,
 } from './constants'
-import type { Ruleset } from '../types'
+import type { Game } from '../types'
 import { isReducedMotion, seconds } from '../animations/motion'
 import { createStage } from './stage'
 import { createWheel } from './wheel'
@@ -29,12 +29,11 @@ type RouletteOptions = {
 
 export const createRoulette = (
   container: HTMLElement,
-  ruleset: Ruleset,
-  goldIds: number[],
+  game: Game,
   { onTick }: RouletteOptions = {},
 ) => {
   const stage = createStage(container)
-  const wheel = createWheel(ruleset.pockets, goldIds)
+  const wheel = createWheel(game)
   stage.scene.add(wheel.group)
 
   const pointerColor = themeValue('--color-pointer')
@@ -56,7 +55,7 @@ export const createRoulette = (
 
   stage.scene.add(pointer, pointerLight)
 
-  let pockets = ruleset.pockets
+  let pockets = game.ruleset.pockets
   let spinSpeed = IDLE_SPEED
   let isSpinning = false
   let spinTimeline: gsap.core.Timeline | null = null
@@ -198,11 +197,11 @@ export const createRoulette = (
       })
     })
 
-  const setTable = (next: Ruleset, nextGold: number[]) => {
+  const setGame = (next: Game) => {
     if (isSpinning) return
 
-    pockets = next.pockets
-    wheel.setPockets(pockets, nextGold)
+    pockets = next.ruleset.pockets
+    wheel.setGame(next)
   }
 
   const dispose = () => {
@@ -230,7 +229,7 @@ export const createRoulette = (
   return {
     spin,
     setOverlay: wheel.setOverlay,
-    setTable,
+    setGame,
     dispose,
   }
 }

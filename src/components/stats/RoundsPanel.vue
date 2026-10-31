@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import { HISTORY_LIST_SIZE, ROUND_OUTCOME_LABEL } from '../const'
-import { vStagger } from '../directives/animate'
-import { useHistoryStore } from '../stores/history'
-import { formatSigned } from '../utils/format'
-import { toneTextClass } from '../utils/tone'
-import ResultBadge from './ResultBadge.vue'
-import Button from './ui/Button.vue'
-import SectionTitle from './ui/SectionTitle.vue'
+import { HISTORY_LIST_SIZE, ROUND_OUTCOME_LABEL } from '../../const'
+import { vStagger } from '../../directives/animate'
+import { useHistoryStore } from '../../stores/history'
+import ResultBadge from '../shared/ResultBadge.vue'
+import Button from '../ui/Button.vue'
+import SectionTitle from '../ui/SectionTitle.vue'
+import SignedAmount from '../ui/SignedAmount.vue'
 
 const emit = defineEmits<{ history: [] }>()
 
@@ -38,9 +37,7 @@ const rounds = computed(() => playerRecords.value.slice(0, HISTORY_LIST_SIZE))
           <span class="text-sm text-ink-2">
             {{ ROUND_OUTCOME_LABEL[record.outcome] }}
           </span>
-          <span class="font-mono font-bold" :class="toneTextClass(record.net)">
-            {{ formatSigned(record.net) }}
-          </span>
+          <SignedAmount :value="record.net" class="font-mono font-bold" />
         </li>
       </ol>
 

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import { BOOST_BLOCK, BOOSTS } from '../const'
-import { useRoundStore } from '../stores/round'
-import { useSettingsStore } from '../stores/settings'
-import { boostBlock, boostCost, isBoostUsable } from '../utils/boosts'
-import { formatMoneyAmount } from '../utils/format'
-import OptionCard from './ui/OptionCard.vue'
-import type { BoostBlock, BoostId } from '../types/index.ts'
+import { BOOST_BLOCK, BOOSTS } from '../../const'
+import { useRoundStore } from '../../stores/round'
+import { useSettingsStore } from '../../stores/settings'
+import { boostBlock, boostCost, isBoostUsable } from '../../utils/boosts'
+import { formatMoneyAmount } from '../../utils/format'
+import OptionCard from '../ui/OptionCard.vue'
+import type { BoostBlock, BoostId } from '../../types/index.ts'
 
 const BOOST_BLOCK_LABEL = {
   [BOOST_BLOCK.NO_NUMBER]: 'Wymaga zakładu na jeden numer.',
@@ -15,13 +15,13 @@ const BOOST_BLOCK_LABEL = {
 } as const satisfies Record<BoostBlock, string>
 
 const roundStore = useRoundStore()
-const { bets, activeBoosts } = storeToRefs(roundStore)
+const { slip, activeBoosts } = storeToRefs(roundStore)
 const { canAddBoost, toggleBoost } = roundStore
 
-const { mode, ruleset } = storeToRefs(useSettingsStore())
+const { game } = storeToRefs(useSettingsStore())
 
 const reasonFor = (id: BoostId) => {
-  const block = boostBlock(id, bets.value, ruleset.value)
+  const block = boostBlock(id, slip.value)
   if (block) return BOOST_BLOCK_LABEL[block]
 
   return !activeBoosts.value.includes(id) && !canAddBoost(id)
@@ -30,15 +30,15 @@ const reasonFor = (id: BoostId) => {
 }
 
 const rows = computed(() =>
-  BOOSTS.filter((boost) => mode.value.boosts.includes(boost.id)).map(
+  BOOSTS.filter((boost) => game.value.mode.boosts.includes(boost.id)).map(
     (boost) => {
       const reason = reasonFor(boost.id)
 
       return {
         boost,
         reason,
-        aside: isBoostUsable(boost.id, bets.value, ruleset.value)
-          ? formatMoneyAmount(boostCost(boost.id, bets.value, ruleset.value))
+        aside: isBoostUsable(boost.id, slip.value)
+          ? formatMoneyAmount(boostCost(boost.id, slip.value))
           : '—',
       }
     },

@@ -1,16 +1,10 @@
 import { defineStore } from 'pinia'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, shallowRef, watch } from 'vue'
 import { CHIPS, ROUND_OUTCOME, START_BALANCE } from '../const'
-import { bestPayout, calculateWinnings } from '../utils/bets'
-import { boostsCost, isBoostUsable, randomHalfStart } from '../utils/boosts'
-import { getRuleset } from '../utils/rulesets'
-import type {
-  ActiveRound,
-  BoostId,
-  Pocket,
-  RoundOutcome,
-  RoundResult,
-} from '../types'
+import { bestPayout, calculateWinnings, summarizeBets } from '../utils/bets'
+import { randomHalfStart } from '../utils/boosts'
+import type { ActiveRound, Pocket, RoundOutcome, RoundResult } from '../types'
+import { useBoostSelection } from '../composables/useBoostSelection'
 import { useHistoryStore } from './history'
 import { usePlayerStore } from './player'
 import { useSettingsStore } from './settings'
@@ -24,22 +18,12 @@ export const useRoundStore = defineStore('round', () => {
   const selectedChip = ref<number>(CHIPS[0].value)
   const isSpinning = ref(false)
   const gameOverOpen = ref(false)
-  const activeRound = ref<ActiveRound | null>(null)
-  const chosenBoosts = ref<BoostId[]>([])
+  const activeRound = shallowRef<ActiveRound | null>(null)
 
-  const totalBet = computed(() =>
-    Object.values(bets.value).reduce((sum, amount) => sum + amount, 0),
-  )
-  const activeBoosts = computed(() =>
-    chosenBoosts.value.filter(
-      (id) =>
-        settings.mode.boosts.includes(id) &&
-        isBoostUsable(id, bets.value, settings.ruleset),
-    ),
-  )
-  const boostCost = computed(() =>
-    boostsCost(activeBoosts.value, bets.value, settings.ruleset),
-  )
+  const slip = computed(() => summarizeBets(settings.game, bets.value))
+  const totalBet = computed(() => slip.value.total)
+  const { activeBoosts, boostCost, canAddBoost, toggleBoost, clearBoosts } =
+    useBoostSelection({ slip, isSpinning })
   const totalOutlay = computed(() => totalBet.value + boostCost.value)
   const availableBalance = computed(
     () => playerStore.balance - totalOutlay.value,
@@ -49,8 +33,7 @@ export const useRoundStore = defineStore('round', () => {
   )
   const maxWin = computed(() =>
     totalBet.value
-      ? bestPayout(bets.value, settings.ruleset, settings.modeId) -
-        totalOutlay.value
+      ? bestPayout(settings.game, slip.value) - totalOutlay.value
       : 0,
   )
   const canConfirm = computed(
@@ -66,11 +49,6 @@ export const useRoundStore = defineStore('round', () => {
     () => {
       if (!isSpinning.value) bets.value = {}
     },
-  )
-
-  watch(
-    () => settings.modeId,
-    () => (chosenBoosts.value = []),
   )
 
   watch(availableBalance, (available) => {
@@ -92,21 +70,6 @@ export const useRoundStore = defineStore('round', () => {
     return true
   }
 
-  const canAddBoost = (id: BoostId) =>
-    isBoostUsable(id, bets.value, settings.ruleset) &&
-    totalOutlay.value + boostsCost([id], bets.value, settings.ruleset) <=
-      playerStore.balance
-
-  const toggleBoost = (id: BoostId) => {
-    if (isSpinning.value) return
-
-    if (chosenBoosts.value.includes(id)) {
-      chosenBoosts.value = chosenBoosts.value.filter((chosen) => chosen !== id)
-    } else if (canAddBoost(id)) chosenBoosts.value.push(id)
-  }
-
-  const clearBoosts = () => (chosenBoosts.value = [])
-
   const clearBets = () => {
     if (!isSpinning.value) bets.value = {}
   }
@@ -116,11 +79,10 @@ export const useRoundStore = defineStore('round', () => {
 
     isSpinning.value = true
     activeRound.value = {
-      rulesetId: settings.rulesetId,
-      modeId: settings.modeId,
-      placedBets: { ...bets.value },
+      game: settings.game,
+      slip: slip.value,
       boosts: [...activeBoosts.value],
-      halfStart: randomHalfStart(settings.ruleset),
+      halfStart: randomHalfStart(settings.game.ruleset),
       totalStaked: totalOutlay.value,
     }
 
@@ -134,12 +96,7 @@ export const useRoundStore = defineStore('round', () => {
       return null
     }
 
-    const totalWon = calculateWinnings(
-      round.placedBets,
-      pocket.id,
-      getRuleset(round.rulesetId),
-      round.modeId,
-    )
+    const totalWon = calculateWinnings(round.game, round.slip, pocket.id)
     const net = totalWon - round.totalStaked
     const outcome: RoundOutcome =
       net > 0
@@ -157,8 +114,8 @@ export const useRoundStore = defineStore('round', () => {
     if (playerStore.activeName) {
       history.add({
         player: playerStore.activeName,
-        rulesetId: round.rulesetId,
-        modeId: round.modeId,
+        rulesetId: round.game.ruleset.id,
+        modeId: round.game.mode.id,
         pocketId: pocket.id,
         label: pocket.label,
         color: pocket.color,
@@ -171,7 +128,7 @@ export const useRoundStore = defineStore('round', () => {
     }
 
     bets.value = {}
-    chosenBoosts.value = []
+    clearBoosts()
     activeRound.value = null
     isSpinning.value = false
 
@@ -183,6 +140,7 @@ export const useRoundStore = defineStore('round', () => {
     selectedChip,
     isSpinning,
     gameOverOpen,
+    slip,
     totalBet,
     activeBoosts,
     boostCost,

@@ -7,20 +7,20 @@ import {
   leaveTo,
   withoutPulse,
   withPulse,
-} from '../animations/effects'
-import { vStagger } from '../directives/animate'
-import { useAudioStore } from '../stores/audio'
-import { useRoundStore } from '../stores/round'
-import { useSettingsStore } from '../stores/settings'
-import { themeValue } from '../utils/theme'
-import Button from './ui/Button.vue'
-import ModeIcon from './ModeIcon.vue'
-import RulesetSwitch from './RulesetSwitch.vue'
+} from '../../animations/effects'
+import { vStagger } from '../../directives/animate'
+import { useAudioStore } from '../../stores/audio'
+import { useRoundStore } from '../../stores/round'
+import { useSettingsStore } from '../../stores/settings'
+import { themeValue } from '../../utils/theme'
+import Button from '../ui/Button.vue'
+import ModeIcon from '../shared/ModeIcon.vue'
+import RulesetSwitch from '../settings/RulesetSwitch.vue'
 
 const emit = defineEmits<{ bet: []; ranking: []; history: []; mode: [] }>()
 
 const { isSpinning } = storeToRefs(useRoundStore())
-const { mode } = storeToRefs(useSettingsStore())
+const { game } = storeToRefs(useSettingsStore())
 const audio = useAudioStore()
 const { muted } = storeToRefs(audio)
 const { toggleMute } = audio
@@ -97,12 +97,12 @@ const onSpinButtonLeave = withoutPulse(
       <Button
         variant="ghost"
         :disabled="isSpinning"
-        :aria-label="`Tryb gry: ${mode.name}`"
+        :aria-label="`Tryb gry: ${game.mode.name}`"
         class="max-sm:w-11 max-sm:px-0 sm:col-start-2 sm:row-start-2 sm:justify-self-center"
         @click="emit('mode')"
       >
-        <ModeIcon :mode-id="mode.id" :size="16" />
-        <span class="hidden sm:inline">{{ mode.name }}</span>
+        <ModeIcon :mode-id="game.mode.id" :size="16" />
+        <span class="hidden sm:inline">{{ game.mode.name }}</span>
       </Button>
 
       <Transition

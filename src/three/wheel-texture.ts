@@ -17,14 +17,14 @@ const COIN_ICON = {
 }
 
 export type WheelOverlay = {
-  dimmedIds?: number[]
-  markedIds?: number[]
-  framedIds?: number[]
+  dimmedIds?: ReadonlySet<number>
+  markedIds?: ReadonlySet<number>
+  framedIds?: ReadonlySet<number>
 }
 
 type WheelOptions = WheelOverlay & {
   highlightIndex?: number
-  goldIds?: number[]
+  goldIds?: ReadonlySet<number>
 }
 
 export const drawWheel = (
@@ -32,10 +32,10 @@ export const drawWheel = (
   pockets: Pocket[],
   {
     highlightIndex = -1,
-    goldIds = [],
-    dimmedIds = [],
-    markedIds = [],
-    framedIds = [],
+    goldIds = new Set<number>(),
+    dimmedIds = new Set<number>(),
+    markedIds = new Set<number>(),
+    framedIds = new Set<number>(),
   }: WheelOptions = {},
 ) => {
   const ctx = canvas.getContext('2d')
@@ -70,8 +70,7 @@ export const drawWheel = (
   const segInner = R * 0.5
 
   const isBoundaryDimmed = (i: number) =>
-    dimmedIds.includes(pockets[(i + N - 1) % N].id) &&
-    dimmedIds.includes(pockets[i].id)
+    dimmedIds.has(pockets[(i + N - 1) % N].id) && dimmedIds.has(pockets[i].id)
 
   // pocket segments
   for (let i = 0; i < N; i++) {
@@ -84,13 +83,13 @@ export const drawWheel = (
     ctx.closePath()
 
     ctx.fillStyle = themeValue(
-      (goldIds.includes(pockets[i].id)
+      (goldIds.has(pockets[i].id)
         ? POCKET_COLOR_BRIGHT_TOKEN
         : POCKET_COLOR_TOKEN)[pockets[i].color],
     )
     ctx.fill()
 
-    if (dimmedIds.includes(pockets[i].id)) {
+    if (dimmedIds.has(pockets[i].id)) {
       ctx.fillStyle = dimColor
       ctx.fill()
     }
@@ -107,14 +106,14 @@ export const drawWheel = (
   }
 
   // gold highlight ring
-  const framed = [...goldIds, ...framedIds]
+  const framed = new Set([...goldIds, ...framedIds])
 
   for (let i = 0; i < N; i++) {
-    if (!framed.includes(pockets[i].id)) continue
-    if (i > 0 && framed.includes(pockets[i - 1].id)) continue
+    if (!framed.has(pockets[i].id)) continue
+    if (i > 0 && framed.has(pockets[i - 1].id)) continue
 
     let end = i
-    while (end + 1 < N && framed.includes(pockets[end + 1].id)) end++
+    while (end + 1 < N && framed.has(pockets[end + 1].id)) end++
 
     const from = i * slice - Math.PI / 2
     const to = (end + 1) * slice - Math.PI / 2
@@ -144,7 +143,7 @@ export const drawWheel = (
     ctx.save()
     ctx.translate(cx + Math.cos(mid) * tr, cy + Math.sin(mid) * tr)
     ctx.rotate(mid + Math.PI / 2)
-    ctx.globalAlpha = dimmedIds.includes(pockets[i].id) ? 0.35 : 1
+    ctx.globalAlpha = dimmedIds.has(pockets[i].id) ? 0.35 : 1
     ctx.font = `bold ${isWinner ? fontSize * 1.2 : fontSize}px Arial`
     ctx.shadowColor = isWinner ? highlightColor : 'rgba(0,0,0,0.95)'
     ctx.shadowBlur = isWinner ? 8 : 5
@@ -173,7 +172,7 @@ export const drawWheel = (
   )
 
   for (let i = 0; i < N; i++) {
-    if (!markedIds.includes(pockets[i].id)) continue
+    if (!markedIds.has(pockets[i].id)) continue
 
     const mid = i * slice - Math.PI / 2 + slice / 2
 

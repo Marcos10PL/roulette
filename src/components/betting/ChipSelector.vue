@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { CHIPS } from '../const'
-import { cssVar } from '../utils/theme'
-import { vStagger } from '../directives/animate'
-import { useAudioStore } from '../stores/audio'
-import { useRoundStore } from '../stores/round'
+import { CHIPS } from '../../const'
+import { cssVar } from '../../utils/theme'
+import { vStagger } from '../../directives/animate'
+import { useAudioStore } from '../../stores/audio'
+import { useRoundStore } from '../../stores/round'
 
 const roundStore = useRoundStore()
 const { availableBalance, selectedChip } = storeToRefs(roundStore)

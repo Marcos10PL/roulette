@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { CircleDot, SlidersHorizontal, Star } from '@lucide/vue'
 import type { Component } from 'vue'
-import { MODE_ID } from '../const'
-import type { ModeId } from '../types'
+import { MODE_ID } from '../../const'
+import type { ModeId } from '../../types'
 
 const MODE_ICONS: Record<ModeId, Component> = {
   [MODE_ID.STANDARD]: CircleDot,

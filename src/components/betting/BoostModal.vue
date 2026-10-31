@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { computed, watch } from 'vue'
-import { usePlayRound } from '../composables/usePlayRound'
-import { useRoundSummary } from '../composables/useRoundSummary'
-import { useRoundStore } from '../stores/round'
+import { usePlayRound } from '../../composables/usePlayRound'
+import { useRoundSummary } from '../../composables/useRoundSummary'
+import { useRoundStore } from '../../stores/round'
 import BoostPicker from './BoostPicker.vue'
-import Button from './ui/Button.vue'
-import Modal from './ui/Modal.vue'
-import SummaryBar from './ui/SummaryBar.vue'
+import Button from '../ui/Button.vue'
+import Modal from '../ui/Modal.vue'
+import SummaryBar from '../ui/SummaryBar.vue'
 
 const open = defineModel<boolean>({ required: true })
 const emit = defineEmits<{ back: [] }>()

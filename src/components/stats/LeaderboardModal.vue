@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { LEADERBOARD_SIZE } from '../const'
-import { vStagger } from '../directives/animate'
-import { usePlayerStore } from '../stores/player'
-import { formatMoneyAmount } from '../utils/format'
-import Card from './ui/Card.vue'
-import Modal from './ui/Modal.vue'
+import { LEADERBOARD_SIZE } from '../../const'
+import { vStagger } from '../../directives/animate'
+import { usePlayerStore } from '../../stores/player'
+import { formatMoneyAmount } from '../../utils/format'
+import Card from '../ui/Card.vue'
+import Modal from '../ui/Modal.vue'
 
 const open = defineModel<boolean>({ required: true })
 

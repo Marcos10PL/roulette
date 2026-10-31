@@ -5,15 +5,15 @@ import {
   POCKET_COLOR,
   POCKET_COLOR_BAR_TOKEN,
   POCKET_COLOR_LABEL,
-} from '../const'
-import { vStagger } from '../directives/animate'
-import { useHistoryStore } from '../stores/history'
-import { formatPercent, formatSigned } from '../utils/format'
-import { cssVar } from '../utils/theme'
-import { toneTextClass } from '../utils/tone'
-import ResultBadge from './ResultBadge.vue'
-import SectionTitle from './ui/SectionTitle.vue'
-import StackedBar from './ui/StackedBar.vue'
+} from '../../const'
+import { vStagger } from '../../directives/animate'
+import { useHistoryStore } from '../../stores/history'
+import { formatPercent } from '../../utils/format'
+import { cssVar } from '../../utils/theme'
+import ResultBadge from '../shared/ResultBadge.vue'
+import SectionTitle from '../ui/SectionTitle.vue'
+import StackedBar from '../ui/StackedBar.vue'
+import SignedAmount from '../ui/SignedAmount.vue'
 
 const { stats } = storeToRefs(useHistoryStore())
 
@@ -57,11 +57,8 @@ const colorsLabel = computed(() =>
             <p class="font-mono text-xs tracking-widest text-ink-3 uppercase">
               Bilans
             </p>
-            <p
-              class="font-mono text-3xl font-bold"
-              :class="toneTextClass(stats.netTotal)"
-            >
-              {{ formatSigned(stats.netTotal) }}
+            <p class="font-mono text-3xl font-bold">
+              <SignedAmount :value="stats.netTotal" />
             </p>
           </div>
         </div>

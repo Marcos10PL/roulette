@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import { useHistoryStore } from '../stores/history'
-import { useRoundStore } from '../stores/round'
-import { formatSigned } from '../utils/format'
-import { toneTextClass } from '../utils/tone'
-import ResultBadge from './ResultBadge.vue'
+import { useHistoryStore } from '../../stores/history'
+import { useRoundStore } from '../../stores/round'
+import ResultBadge from '../shared/ResultBadge.vue'
+import SignedAmount from '../ui/SignedAmount.vue'
 
 const RECENT_RESULTS_COUNT = 5
 
@@ -48,9 +47,7 @@ const recent = computed(() =>
       Rundy
       <strong class="font-mono text-ink">{{ stats.rounds }}</strong>
       · Bilans
-      <strong class="font-mono" :class="toneTextClass(stats.netTotal)">
-        {{ formatSigned(stats.netTotal) }}
-      </strong>
+      <SignedAmount :value="stats.netTotal" class="font-mono font-bold" />
     </p>
   </div>
 </template>

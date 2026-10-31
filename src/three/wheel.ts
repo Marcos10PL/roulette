@@ -6,16 +6,13 @@ import {
   WHEEL_TILT,
   WHEEL_Z,
 } from './constants'
-import type { Pocket } from '../types'
+import type { Game } from '../types'
 import { themeValue } from '../utils/theme'
 import { drawWheel, type WheelOverlay } from './wheel-texture'
 
-export const createWheel = (
-  initialPockets: Pocket[],
-  initialGold: number[],
-) => {
-  let pockets = initialPockets
-  let goldIds = initialGold
+export const createWheel = (initial: Game) => {
+  let pockets = initial.ruleset.pockets
+  let goldIds = initial.goldenIds
   let overlay: WheelOverlay = {}
   let highlighted = -1
   const brass = themeValue('--color-brass')
@@ -131,9 +128,9 @@ export const createWheel = (
     redraw()
   }
 
-  const setPockets = (nextPockets: Pocket[], nextGold: number[]) => {
-    pockets = nextPockets
-    goldIds = nextGold
+  const setGame = (next: Game) => {
+    pockets = next.ruleset.pockets
+    goldIds = next.goldenIds
     redraw()
   }
 
@@ -152,7 +149,7 @@ export const createWheel = (
     redraw,
     setOverlay,
     clearOverlay,
-    setPockets,
+    setGame,
     dispose,
   }
 }

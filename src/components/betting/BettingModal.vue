@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import { BET_KIND } from '../const'
-import { usePlayRound } from '../composables/usePlayRound'
-import { useRoundSummary } from '../composables/useRoundSummary'
-import { vStagger } from '../directives/animate'
-import { useRoundStore } from '../stores/round'
-import { useSettingsStore } from '../stores/settings'
-import Button from './ui/Button.vue'
-import Modal from './ui/Modal.vue'
-import SummaryBar from './ui/SummaryBar.vue'
+import { BET_KIND } from '../../const'
+import { usePlayRound } from '../../composables/usePlayRound'
+import { useRoundSummary } from '../../composables/useRoundSummary'
+import { vStagger } from '../../directives/animate'
+import { useRoundStore } from '../../stores/round'
+import { useSettingsStore } from '../../stores/settings'
+import Button from '../ui/Button.vue'
+import Modal from '../ui/Modal.vue'
+import SummaryBar from '../ui/SummaryBar.vue'
 import BettingTable from './BettingTable.vue'
 import ChipSelector from './ChipSelector.vue'
 
@@ -21,7 +21,7 @@ const { canClear, canConfirm } = storeToRefs(roundStore)
 const { clearBets } = roundStore
 const { play } = usePlayRound()
 
-const { mode } = storeToRefs(useSettingsStore())
+const { game } = storeToRefs(useSettingsStore())
 
 const { balance, bet, maxWin } = useRoundSummary()
 const summary = computed(() => [balance.value, bet.value, maxWin.value])
@@ -29,7 +29,7 @@ const summary = computed(() => [balance.value, bet.value, maxWin.value])
 const confirm = () => {
   open.value = false
 
-  if (mode.value.boosts.length) emit('boosts')
+  if (game.value.mode.boosts.length) emit('boosts')
   else play()
 }
 </script>
@@ -44,13 +44,15 @@ const confirm = () => {
       />
 
       <p class="text-center text-xs text-ink-3 sm:text-xs">
-        Liczba {{ mode.odds[BET_KIND.NUMBER] }}:1 ·
-        <template v-if="mode.goldenOdds">
-          <span class="text-gold">Złoty sektor {{ mode.goldenOdds }}:1</span>
+        Liczba {{ game.mode.odds[BET_KIND.NUMBER] }}:1 ·
+        <template v-if="game.mode.goldenOdds">
+          <span class="text-gold"
+            >Złoty sektor {{ game.mode.goldenOdds }}:1</span
+          >
           ·
         </template>
-        Tuzin / Kolumna {{ mode.odds[BET_KIND.DOZEN] }}:1 · Pozostałe
-        {{ mode.odds[BET_KIND.OUTSIDE] }}:1
+        Tuzin / Kolumna {{ game.mode.odds[BET_KIND.DOZEN] }}:1 · Pozostałe
+        {{ game.mode.odds[BET_KIND.OUTSIDE] }}:1
       </p>
 
       <ChipSelector />
@@ -64,7 +66,7 @@ const confirm = () => {
         :disabled="!canConfirm"
         @click="confirm"
       >
-        {{ mode.boosts.length ? 'Dalej' : 'Kręć!' }}
+        {{ game.mode.boosts.length ? 'Dalej' : 'Kręć!' }}
       </Button>
     </template>
   </Modal>

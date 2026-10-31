@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { POCKET_COLOR_LABEL, POCKET_COLOR_TOKEN } from '../const'
-import type { BadgeSize, PocketColor } from '../types'
-import { cssVar } from '../utils/theme'
-import Badge from './ui/Badge.vue'
+import { POCKET_COLOR_LABEL, POCKET_COLOR_TOKEN } from '../../const'
+import type { BadgeSize, PocketColor } from '../../types'
+import { cssVar } from '../../utils/theme'
+import Badge from '../ui/Badge.vue'
 
 defineProps<{ label: string; color: PocketColor; size?: BadgeSize }>()
 </script>

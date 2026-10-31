@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { START_BALANCE } from '../const'
-import { useRoundStore } from '../stores/round'
-import { formatMoneyAmount } from '../utils/format'
-import Button from './ui/Button.vue'
-import Modal from './ui/Modal.vue'
+import { START_BALANCE } from '../../const'
+import { useRoundStore } from '../../stores/round'
+import { formatMoneyAmount } from '../../utils/format'
+import Button from '../ui/Button.vue'
+import Modal from '../ui/Modal.vue'
 
 const { gameOverOpen } = storeToRefs(useRoundStore())
 </script>

@@ -12,6 +12,3 @@ export const TONE_TEXT_CLASSES: Record<Tone, string> = {
   [TONE.NEGATIVE]: 'text-loss',
   [TONE.NEUTRAL]: '',
 }
-
-export const toneTextClass = (amount: number) =>
-  TONE_TEXT_CLASSES[toneOf(amount)]

@@ -1,108 +1,57 @@
-import {
-  BET_IDS,
-  BOOST_BLOCK,
-  BOOST_ID,
-  BOOSTS,
-  BET_KIND,
-  MAGNET,
-  POCKET_COLOR,
-} from '../const'
-import type { BoostBlock, BoostContext, BoostId, Ruleset } from '../types'
-
-type PlacedBets = Record<string, number>
+import { BOOST_BLOCK, BOOST_ID, BOOSTS, MAGNET, POCKET_COLOR } from '../const'
+import type {
+  BoostBlock,
+  BoostContext,
+  BoostId,
+  Game,
+  Ruleset,
+  Slip,
+} from '../types'
 
 const getBoost = (id: BoostId) =>
   BOOSTS.find((boost) => boost.id === id) ?? BOOSTS[0]
 
-const numberBets = (placedBets: PlacedBets, ruleset: Ruleset) =>
-  ruleset.bets.filter(
-    (bet) =>
-      bet.kind === BET_KIND.NUMBER &&
-      bet.value !== undefined &&
-      (placedBets[bet.id] ?? 0) > 0,
-  )
+export const magnetTarget = (slip: Slip) =>
+  slip.numbers.length === 1 ? slip.numbers[0] : null
 
-export const magnetTarget = (placedBets: PlacedBets, ruleset: Ruleset) => {
-  const numbers = numberBets(placedBets, ruleset)
-  if (numbers.length !== 1) return null
+const costBase = (id: BoostId, slip: Slip) => {
+  if (id === BOOST_ID.MAGNET) return magnetTarget(slip)?.amount ?? 0
+  if (id === BOOST_ID.ZERO_BLOCK && slip.onZero) return 0
 
-  return { id: numbers[0].value as number, amount: placedBets[numbers[0].id] }
+  return slip.total
 }
 
-const total = (placedBets: PlacedBets) =>
-  Object.values(placedBets).reduce((sum, amount) => sum + amount, 0)
-
-const betsOnZero = (placedBets: PlacedBets, ruleset: Ruleset) =>
-  ruleset.pockets.some(
-    (pocket) =>
-      pocket.color === POCKET_COLOR.GREEN &&
-      (placedBets[`${BET_IDS.NUMBER}${pocket.id}`] ?? 0) > 0,
-  )
-
-const costBase = (id: BoostId, placedBets: PlacedBets, ruleset: Ruleset) => {
+export const boostBlock = (id: BoostId, slip: Slip): BoostBlock | null => {
   if (id === BOOST_ID.MAGNET) {
-    return magnetTarget(placedBets, ruleset)?.amount ?? 0
+    return magnetTarget(slip) ? null : BOOST_BLOCK.NO_NUMBER
   }
 
-  if (id === BOOST_ID.ZERO_BLOCK && betsOnZero(placedBets, ruleset)) return 0
-
-  return total(placedBets)
-}
-
-export const boostBlock = (
-  id: BoostId,
-  placedBets: PlacedBets,
-  ruleset: Ruleset,
-): BoostBlock | null => {
-  if (id === BOOST_ID.MAGNET) {
-    return magnetTarget(placedBets, ruleset) ? null : BOOST_BLOCK.NO_NUMBER
-  }
-
-  if (id === BOOST_ID.ZERO_BLOCK && betsOnZero(placedBets, ruleset)) {
-    return BOOST_BLOCK.ZERO_BET
-  }
+  if (id === BOOST_ID.ZERO_BLOCK && slip.onZero) return BOOST_BLOCK.ZERO_BET
 
   return null
 }
 
-export const isBoostUsable = (
-  id: BoostId,
-  placedBets: PlacedBets,
-  ruleset: Ruleset,
-) =>
-  boostBlock(id, placedBets, ruleset) === null &&
-  costBase(id, placedBets, ruleset) > 0
+export const isBoostUsable = (id: BoostId, slip: Slip) =>
+  boostBlock(id, slip) === null && costBase(id, slip) > 0
 
-export const boostCost = (
-  id: BoostId,
-  placedBets: PlacedBets,
-  ruleset: Ruleset,
-) =>
-  Math.ceil(
-    (getBoost(id).pricePercent * costBase(id, placedBets, ruleset)) / 100,
-  )
+export const boostCost = (id: BoostId, slip: Slip) =>
+  Math.ceil((getBoost(id).pricePercent * costBase(id, slip)) / 100)
 
-export const boostsCost = (
-  ids: BoostId[],
-  placedBets: PlacedBets,
-  ruleset: Ruleset,
-) => ids.reduce((sum, id) => sum + boostCost(id, placedBets, ruleset), 0)
+export const boostsCost = (ids: BoostId[], slip: Slip) =>
+  ids.reduce((sum, id) => sum + boostCost(id, slip), 0)
 
 export const randomHalfStart = (ruleset: Ruleset) =>
   Math.floor(Math.random() * ruleset.pockets.length)
 
 export const applyBoosts = (
-  weights: number[],
-  ruleset: Ruleset,
-  { boosts, placedBets, halfStart }: BoostContext,
+  { ruleset, weights }: Game,
+  { boosts, slip, halfStart }: BoostContext,
 ) => {
   const result = [...weights]
   const count = ruleset.pockets.length
   const half = Math.ceil(count / 2)
 
-  const magnet = boosts.includes(BOOST_ID.MAGNET)
-    ? magnetTarget(placedBets, ruleset)
-    : null
+  const magnet = boosts.includes(BOOST_ID.MAGNET) ? magnetTarget(slip) : null
   const blocksZero = boosts.includes(BOOST_ID.ZERO_BLOCK)
   const halvesWheel = boosts.includes(BOOST_ID.HALF_WHEEL)
 

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { vStagger } from '../directives/animate'
-import { useRoundStore } from '../stores/round'
-import { useSettingsStore } from '../stores/settings'
-import { RULESETS } from '../utils/rulesets'
-import SegmentedControl from './ui/SegmentedControl.vue'
+import { vStagger } from '../../directives/animate'
+import { useRoundStore } from '../../stores/round'
+import { useSettingsStore } from '../../stores/settings'
+import { RULESETS } from '../../utils/rulesets'
+import SegmentedControl from '../ui/SegmentedControl.vue'
 
 const { rulesetId } = storeToRefs(useSettingsStore())
 const { isSpinning } = storeToRefs(useRoundStore())

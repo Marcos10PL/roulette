@@ -9,16 +9,21 @@ import {
   ROUND_OUTCOME,
   ROUND_OUTCOME_LABEL,
   TONE,
-} from '../const'
-import { vStagger } from '../directives/animate'
-import { useHistoryStore } from '../stores/history'
-import { formatMoneyAmount, formatPercent, formatSigned } from '../utils/format'
-import { cssVar } from '../utils/theme'
-import { toneOf, toneTextClass } from '../utils/tone'
-import ResultBadge from './ResultBadge.vue'
-import Modal from './ui/Modal.vue'
-import StackedBar from './ui/StackedBar.vue'
-import StatCard from './ui/StatCard.vue'
+} from '../../const'
+import { vStagger } from '../../directives/animate'
+import { useHistoryStore } from '../../stores/history'
+import {
+  formatMoneyAmount,
+  formatPercent,
+  formatSigned,
+} from '../../utils/format'
+import { cssVar } from '../../utils/theme'
+import { toneOf } from '../../utils/tone'
+import ResultBadge from '../shared/ResultBadge.vue'
+import Modal from '../ui/Modal.vue'
+import StackedBar from '../ui/StackedBar.vue'
+import StatCard from '../ui/StatCard.vue'
+import SignedAmount from '../ui/SignedAmount.vue'
 
 const open = defineModel<boolean>({ required: true })
 
@@ -138,12 +143,10 @@ const colorsLabel = computed(() =>
               {{ formatMoneyAmount(record.staked) }}
             </span>
           </span>
-          <span
+          <SignedAmount
+            :value="record.net"
             class="w-11 text-right font-mono font-bold sm:w-14"
-            :class="toneTextClass(record.net)"
-          >
-            {{ formatSigned(record.net) }}
-          </span>
+          />
         </li>
       </ol>
     </div>

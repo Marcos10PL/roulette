@@ -42,19 +42,31 @@ export type Player = {
   best: number
 }
 
-export type ActiveRound = {
-  rulesetId: RulesetId
-  modeId: ModeId
+export type Game = {
+  ruleset: Ruleset
+  mode: Mode
+  goldenIds: Set<number>
+  weights: number[]
+  odds: Record<string, number>
+  betsById: Map<string, BetDefinition>
+}
+
+export type Slip = {
   placedBets: Record<string, number>
+  total: number
+  numbers: { id: number; amount: number }[]
+  onZero: boolean
+}
+
+export type ActiveRound = {
+  game: Game
+  slip: Slip
   boosts: BoostId[]
   halfStart: number
   totalStaked: number
 }
 
-export type BoostContext = Pick<
-  ActiveRound,
-  'boosts' | 'placedBets' | 'halfStart'
->
+export type BoostContext = Pick<ActiveRound, 'boosts' | 'slip' | 'halfStart'>
 
 export type RoundResult = {
   net: number

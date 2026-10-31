@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import { enterFrom, leaveTo } from '../animations/effects'
-import { useAudioStore } from '../stores/audio'
-import { useRoundStore } from '../stores/round'
-import { useSettingsStore } from '../stores/settings'
-import { formatChipAmount } from '../utils/format'
-import { getTableCells, TABLE_GRID_STYLE } from '../utils/table-layout'
+import { enterFrom, leaveTo } from '../../animations/effects'
+import { useAudioStore } from '../../stores/audio'
+import { useRoundStore } from '../../stores/round'
+import { useSettingsStore } from '../../stores/settings'
+import { formatChipAmount } from '../../utils/format'
+import { getTableCells, TABLE_GRID_STYLE } from '../../utils/table-layout'
 
-const { ruleset, modeId } = storeToRefs(useSettingsStore())
+const { game } = storeToRefs(useSettingsStore())
 const roundStore = useRoundStore()
 const { isSpinning } = storeToRefs(roundStore)
 const { placeBet, getBetAmount } = roundStore
 const { play } = useAudioStore()
 
-const cells = computed(() => getTableCells(ruleset.value, modeId.value))
+const cells = computed(() => getTableCells(game.value))
 
 const popIn = enterFrom({ scale: 0 }, { duration: 0.35, ease: 'back.out(3)' })
 const shrinkAway = leaveTo({ scale: 0 }, { duration: 0.15 })
