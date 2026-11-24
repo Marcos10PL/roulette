@@ -15,10 +15,14 @@ export const createGame = (rulesetId: RulesetId, modeId: ModeId): Game => {
   const ruleset = getRuleset(rulesetId)
   const mode = getMode(modeId)
 
+  // golden numbers
   const goldenIds = new Set<number>(
     mode.id === MODE_ID.GOLDEN_SECTOR ? GOLDEN_POCKETS[ruleset.id] : [],
   )
 
+  // golden weight (w)
+  // (6 * w) / (6 * w + 31) = 3%
+  // w = 3% * 31 / ((1 - 3%) * 6)
   const others = ruleset.pockets.length - goldenIds.size
   const goldenWeight = goldenIds.size
     ? (GOLDEN_SECTOR.CHANCE * others) /
@@ -35,6 +39,7 @@ export const createGame = (rulesetId: RulesetId, modeId: ModeId): Game => {
     weights: ruleset.pockets.map((pocket) =>
       goldenIds.has(pocket.id) ? goldenWeight : 1,
     ),
+    // odds for each bet
     odds: Object.fromEntries(
       ruleset.bets.map((bet) => [
         bet.id,
@@ -43,6 +48,7 @@ export const createGame = (rulesetId: RulesetId, modeId: ModeId): Game => {
           : mode.odds[bet.kind],
       ]),
     ),
+    // map of bets by id for quick lookup
     betsById: new Map(ruleset.bets.map((bet) => [bet.id, bet] as const)),
   }
 }

@@ -36,6 +36,14 @@ export const createRoulette = (
   const wheel = createWheel(game)
   stage.scene.add(wheel.group)
 
+  let pockets = game.ruleset.pockets
+  let spinSpeed = IDLE_SPEED
+  let isSpinning = false
+  let spinTimeline: gsap.core.Timeline | null = null
+  let endTimeline: gsap.core.Timeline | null = null
+  let highlightCall: gsap.core.Tween | null = null
+
+  // pointer
   const pointerColor = themeValue('--color-pointer')
   const pointerLight = new THREE.PointLight(pointerColor, 0, 18)
   pointerLight.position.set(0, POINTER_TOP_Y + 0.5, WHEEL_Z)
@@ -55,13 +63,7 @@ export const createRoulette = (
 
   stage.scene.add(pointer, pointerLight)
 
-  let pockets = game.ruleset.pockets
-  let spinSpeed = IDLE_SPEED
-  let isSpinning = false
-  let spinTimeline: gsap.core.Timeline | null = null
-  let endTimeline: gsap.core.Timeline | null = null
-  let highlightCall: gsap.core.Tween | null = null
-
+  // idle rotation
   const rotateIdle = (_time: number, deltaTime: number) => {
     if (isReducedMotion()) return
 
@@ -69,11 +71,13 @@ export const createRoulette = (
   }
   gsap.ticker.add(rotateIdle)
 
+  // arms rotation
   const counterRotate = () => {
     wheel.arms.rotation.z = -1.4 * wheel.group.rotation.z
   }
   gsap.ticker.add(counterRotate)
 
+  // startup animation
   gsap.from(wheel.group.scale, {
     x: 0,
     y: 0,
@@ -90,13 +94,17 @@ export const createRoulette = (
       }
 
       isSpinning = true
+
+      // rotation is controlled by the timeline
       spinSpeed = 0
 
+      // reset any previous spin
       endTimeline?.kill()
       highlightCall?.kill()
       wheel.group.scale.setScalar(WHEEL_SCALE)
       pointer.position.y = POINTER_TOP_Y
 
+      // calculate the final rotation
       const slot = TWO_PI / pockets.length
       const target = winningIndex * slot + slot / 2
       const start = wheel.group.rotation.z
@@ -108,6 +116,7 @@ export const createRoulette = (
 
       spinTimeline = gsap.timeline()
 
+      // animate the camera
       spinTimeline.to(stage.camera.position, {
         z: stage.getProfile().SPIN,
         duration: seconds(1.5),
@@ -120,6 +129,7 @@ export const createRoulette = (
         },
       })
 
+      // animate the wheel rotation
       spinTimeline.to(wheel.group.rotation, {
         z: finalRotation,
         duration: seconds(SPIN_DURATION),

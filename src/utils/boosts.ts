@@ -14,6 +14,7 @@ const getBoost = (id: BoostId) =>
 export const magnetTarget = (slip: Slip) =>
   slip.numbers.length === 1 ? slip.numbers[0] : null
 
+// cost base for a boost
 const costBase = (id: BoostId, slip: Slip) => {
   if (id === BOOST_ID.MAGNET) return magnetTarget(slip)?.amount ?? 0
   if (id === BOOST_ID.ZERO_BLOCK && slip.onZero) return 0
@@ -21,6 +22,7 @@ const costBase = (id: BoostId, slip: Slip) => {
   return slip.total
 }
 
+// returns a block reason for a boost
 export const boostBlock = (id: BoostId, slip: Slip): BoostBlock | null => {
   if (id === BOOST_ID.MAGNET) {
     return magnetTarget(slip) ? null : BOOST_BLOCK.NO_NUMBER
@@ -40,9 +42,11 @@ export const boostCost = (id: BoostId, slip: Slip) =>
 export const boostsCost = (ids: BoostId[], slip: Slip) =>
   ids.reduce((sum, id) => sum + boostCost(id, slip), 0)
 
+// starts the wheel at a random number
 export const randomHalfStart = (ruleset: Ruleset) =>
   Math.floor(Math.random() * ruleset.pockets.length)
 
+// returns a new weights array with boosts applied
 export const applyBoosts = (
   { ruleset, weights }: Game,
   { boosts, slip, halfStart }: BoostContext,

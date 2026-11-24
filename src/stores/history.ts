@@ -13,19 +13,19 @@ export const useHistoryStore = defineStore(
     const records = ref<SpinRecord[]>([])
 
     const playerRecords = computed(() =>
-      records.value
-        .filter((record) => record.player === playerStore.activeName)
-        .reverse(),
+      records.value.filter(
+        (record) => record.player === playerStore.activeName,
+      ),
     )
 
     const stats = computed(() => computeStats(playerRecords.value))
 
     const add = (record: SpinRecord) => {
-      records.value.push(record)
+      records.value.unshift(record)
 
       const own = records.value.filter((r) => r.player === record.player)
       if (own.length > HISTORY_LIMIT) {
-        records.value.splice(records.value.indexOf(own[0]), 1)
+        records.value.splice(records.value.indexOf(own[own.length - 1]), 1)
       }
     }
 

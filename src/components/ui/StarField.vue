@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import gsap from 'gsap'
 import { onBeforeUnmount, onMounted, useTemplateRef } from 'vue'
-import { isReducedMotion } from '../../animations/motion'
+import { twinkleStars } from '../../animations/star-field'
 
 const { count = 75 } = defineProps<{ count?: number }>()
 
@@ -13,30 +12,13 @@ const stars = Array.from({ length: count }, () => ({
 
 const elements = useTemplateRef<HTMLElement[]>('elements')
 
-let context: gsap.Context | undefined
+let stopAnimation: (() => void) | undefined
 
 onMounted(() => {
-  if (isReducedMotion()) return
-
-  context = gsap.context(() => {
-    for (const element of elements.value ?? []) {
-      gsap.fromTo(
-        element,
-        { opacity: 0.1 },
-        {
-          opacity: 0.4 + Math.random() * 0.6,
-          duration: 1.5 + Math.random() * 3,
-          delay: Math.random() * 3,
-          repeat: -1,
-          yoyo: true,
-          ease: 'sine.inOut',
-        },
-      )
-    }
-  })
+  stopAnimation = twinkleStars(elements.value ?? [])
 })
 
-onBeforeUnmount(() => context?.revert())
+onBeforeUnmount(() => stopAnimation?.())
 </script>
 
 <template>

@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import gsap from 'gsap'
-import { seconds } from '../../animations/motion'
-import { fadeOut } from '../../animations/effects'
+import { enterModal, leaveModal } from '../../animations/modal'
 import { X } from '@lucide/vue'
 import { nextTick, onBeforeUnmount, useTemplateRef, watch } from 'vue'
 import type { ModalSize } from '../../types'
@@ -50,30 +48,13 @@ watch(open, async (isOpen) => {
 
 onBeforeUnmount(forget)
 
-const onEnter = (el: Element, done: () => void) => {
-  gsap.fromTo(
-    el,
-    { opacity: 0 },
-    { opacity: 1, duration: seconds(0.2), onComplete: done },
-  )
-  gsap.fromTo(
-    card.value,
-    { scale: 0.9, y: 20 },
-    { scale: 1, y: 0, duration: seconds(0.3), ease: 'back.out(1.4)' },
-  )
-}
-
-const fadeOutOverlay = fadeOut({ duration: 0.2 })
-
-const onLeave = (el: Element, done: () => void) => {
-  gsap.set(el, { pointerEvents: 'none' })
-  fadeOutOverlay(el, done)
-}
+const onEnter = (el: Element, done: () => void) =>
+  enterModal(el, card.value, done)
 </script>
 
 <template>
   <Teleport to="body">
-    <Transition :css="false" @enter="onEnter" @leave="onLeave">
+    <Transition :css="false" @enter="onEnter" @leave="leaveModal">
       <div
         v-if="open"
         class="fixed inset-0 z-50 grid place-items-center p-2 sm:p-4"

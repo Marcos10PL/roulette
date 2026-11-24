@@ -97,11 +97,13 @@ export const createWheel = (initial: Game) => {
     const angle = (i * Math.PI) / 2
     const [dx, dy] = [-Math.sin(angle), Math.cos(angle)]
 
+    // arm
     const mesh = new THREE.Mesh(arm, bossGlobe.material)
     mesh.position.set((dx * ARM_LENGTH) / 2, (dy * ARM_LENGTH) / 2, 3)
     mesh.rotation.z = angle
     arms.add(mesh)
 
+    // tip
     const end = new THREE.Mesh(tip, bossGlobe.material)
     end.position.set(dx * ARM_LENGTH, dy * ARM_LENGTH, 3)
     arms.add(end)

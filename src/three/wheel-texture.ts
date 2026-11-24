@@ -69,6 +69,7 @@ export const drawWheel = (
   const segOuter = R * 0.88
   const segInner = R * 0.5
 
+  // check if the two pockets on either side of a boundary are both dimmed
   const isBoundaryDimmed = (i: number) =>
     dimmedIds.has(pockets[(i + N - 1) % N].id) && dimmedIds.has(pockets[i].id)
 

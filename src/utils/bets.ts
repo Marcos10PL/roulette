@@ -3,7 +3,7 @@ import type { BetDefinition, Game, Pocket, Slip } from '../types'
 
 const isRegular = (nr: number) => nr >= 1 && nr <= 36
 
-// columns are numbered 1-3; column 3 holds the multiples of 3
+// columns are numbered 1-3, column 3 holds the multiples of 3
 const columnBets: BetDefinition[] = [1, 2, 3].map((column) => ({
   id: `${BET_IDS.COLUMN}${column}`,
   label: '2 do 1',
@@ -96,6 +96,7 @@ export const summarizeBets = (
     }
   }
 
+  // check if any of the placed bets cover a zero pocket
   const zeroIds = new Set(
     game.ruleset.pockets
       .filter((pocket) => pocket.color === POCKET_COLOR.GREEN)
@@ -119,6 +120,7 @@ export const calculateWinnings = (
 
   for (const [betId, amount] of Object.entries(slip.placedBets)) {
     if (game.betsById.get(betId)?.wins(winNumber)) {
+      // +1 to return the original stake
       totalWon += amount * (game.odds[betId] + 1)
     }
   }
@@ -127,6 +129,7 @@ export const calculateWinnings = (
 }
 
 export const coveredPocketIds = (game: Game, slip: Slip) => {
+  // all bets that have been placed
   const bets = Object.keys(slip.placedBets).flatMap(
     (id) => game.betsById.get(id) ?? [],
   )

@@ -20,7 +20,7 @@ const rankColor = (index: number, own: boolean) => {
 </script>
 
 <template>
-  <Modal v-model="open" :title="`Top ${LEADERBOARD_SIZE} graczy`">
+  <Modal v-model="open" :title="`Top ${LEADERBOARD_SIZE} najwyższych sald`">
     <ol v-if="topPlayers.length" v-stagger class="flex flex-col gap-1.5">
       <Card
         v-for="(entry, index) in topPlayers"

@@ -12,6 +12,7 @@ const TABLE_COLUMNS = 14
 const SUB_ROWS = 2
 const NUMBER_ROWS = 3
 const NUMBER_GRID_ROWS = NUMBER_ROWS * SUB_ROWS
+
 const DOZEN_GRID_ROW = NUMBER_GRID_ROWS + 1
 const OUTSIDE_GRID_ROW = NUMBER_GRID_ROWS + 2
 const TABLE_ROWS = OUTSIDE_GRID_ROW
@@ -30,7 +31,8 @@ const OUTSIDE_ORDER: string[] = [
   BET_IDS.HIGH,
 ]
 
-const rowOf = (n: number) => (n % 3 === 0 ? 0 : 3 - (n % 3))
+// 0, 1, 2 -> top, middle, bottom
+const rowOf = (n: number) => [0, 2, 1][n % 3]
 const rowSpan = (row: number) => `${row * SUB_ROWS + 1} / span ${SUB_ROWS}`
 
 const PLACEMENT: Record<

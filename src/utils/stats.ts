@@ -3,6 +3,7 @@ import type { PocketColor, SpinRecord, Stats } from '../types'
 
 const HOT_NUMBERS_COUNT = 5
 
+// { key: string } => { key: 0 }
 const countersFor = <T extends string>(values: Record<string, T>) =>
   Object.fromEntries(
     Object.values(values).map((value) => [value, 0]),
@@ -62,6 +63,6 @@ export const computeStats = (records: SpinRecord[]): Stats => {
     biggestWin,
     biggestLoss,
     colors,
-    hotNumbers,
+    hotNumbers, // most frequently hit numbers
   }
 }
